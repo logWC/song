@@ -13,7 +13,7 @@ const actions = {
         dispatch('obtainLikeList',profile.userId)
     },
     async obtainLikeList({commit},userId){
-        /* 获取喜欢歌曲列表 */
+        /* 获用户喜欢歌曲 */
         // 数组：获取所有歌曲id
         let idList = await this.$api.likeList(userId)
         .then(({data}) => data.ids)
