@@ -1,28 +1,30 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <router-view></router-view>
+    
+    <!-- 为PlaySong组件在底下留空间 -->
+    <div style="height:50px"></div>
+    <PlaySong />
   </div>
 </template>
-
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+// 导入下标播放组件
+import PlaySong from './components/PlaySong.vue'
 
 export default {
+  components: { PlaySong },
   name: 'App',
-  components: {
-    HelloWorld
+  created() {
+    // 判断是否还在登录状态
+    this.$api.loginStatus()
+    .then(content => this.$store.dispatch('userData',content.data.profile))
+    .catch(error => console.log(error))
+  },
+  mounted(){
+    console.log("app")
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style scoped>
 </style>
