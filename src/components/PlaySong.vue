@@ -1,6 +1,6 @@
 <template>
-    <div class="whole" :class="{whole1:!boole,whole2:boole}">
-        <div class="thead" v-show="!boole">
+    <div>
+        <div class="thead" :class="{whole1:!boole,whole2:boole}" @mouseleave="out" @mouseenter="penetrate">
             <img @click="clickSongImg" :src="picUrl" alt="加载出错啦" />
             <audio ref="audio" controls autoplay="autoplay" :src="audioSrc">
                 对不起，你的浏览器不支持audio标签，请升级或更换浏览器进行播放
@@ -10,7 +10,7 @@
             <button class="none" ref="play" @click="play">播放</button>
             <button>下一首</button>
         </div>
-        <PlaySongDetails v-show="boole" />
+        <PlaySongDetails v-show="false" />
     </div>
 </template>
 <script>
@@ -23,7 +23,8 @@ export default {
             audioSrc:null,
             picUrl:require('../assets/logo.png'),
             musicObj:null,
-            boole:false
+            boole:false,
+            setTime:null
         }
     },
     methods: {
@@ -70,6 +71,15 @@ export default {
             this.boole = !this.boole
             removeEventListener('popstate',this.open)
         },
+        penetrate(){
+            /* 鼠标进入元素 */
+            this.boole=true
+            clearTimeout(this.setTime)
+        },
+        out(){
+            /* 鼠标离开元素 */
+            this.setTime = setTimeout(()=>this.boole=false,2000)
+        }
     },
     created(){
         // 设置全局总线事件
@@ -80,13 +90,14 @@ export default {
 <style scoped>
 .thead{
     display: flex;
+    position: fixed;
     width: 100%;
     height: 50px;
+    transition: all 0.3s;
 }
 .thead audio{
     flex-grow: 1;
     height: inherit;
-    background-color: red;
 }
 .thead img{
     width: 50px;
@@ -97,16 +108,17 @@ export default {
 .block{
     display: block;
 }
-.whole{
-    position: fixed;
+/* .whole{
     width: 100%;
-}
+    position: fixed;
+} */
 .whole1{
-    top: calc(100% - 50px);
+    top:calc(100vh - 10px);
+    border-top: 10px solid rgba(61, 45, 45);
 }
 .whole2{
-    top:0;
-    height: calc(100vh);
-    background-color: aquamarine;
+    top:calc(100vh - 50px);
+    border-top: none;
+    background-color: rgb(180, 167, 149);
 }
 </style>
