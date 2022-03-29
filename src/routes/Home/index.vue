@@ -1,6 +1,5 @@
 <template>
     <div>
-        1
         <!-- 推荐歌单 -->
         <recommendSongSheet />
         <!-- 新音乐 -->
