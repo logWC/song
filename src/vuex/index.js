@@ -23,6 +23,11 @@ const actions = {
         // 数组：同步歌曲详情（排序）
         likeDataList = idList.map(id => likeDataList.find(val => val.id == id))
         commit('likeDataList',likeDataList)
+    },
+    clearDate({commit},arr){
+        /* 清空state[...arr] */
+        console.log(arr)
+        commit('clearDate',arr)
     }
 }
 const mutations = {
@@ -34,6 +39,9 @@ const mutations = {
         /* 数组对象：喜欢歌曲name、picUrl赋值 */
         state.likeDataList = arrObj
     },
+    clearDate(state,arr){
+        arr.forEach(val => state[val] = null)
+    }
 }
 export default new Vuex.Store({
     state,

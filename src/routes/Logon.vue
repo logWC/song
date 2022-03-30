@@ -1,13 +1,15 @@
 <template>
     <div class="signIn" v-if="signIn">
         <div class="user">
-            <q>网易云登录</q>
+            <h3>网易云登录</h3>
             <div>
                 <input type="text" v-model="phone" placeholder="手机号" />
                 <input type="password" v-model="password" placeholder="密码" />
             </div>
             <button @click="logon">登录</button>
+            <sub @click="tourist">游客模式</sub>
         </div>
+        <p>注：游客模式部分功能会受限</p>
     </div>
 </template>
 <script>
@@ -44,15 +46,17 @@ export default {
             })
             .catch(error => console.log(error))
         },
+        tourist(){
+            /* 清空vuex的数据、转换路由 */
+            this.$router.replace({path:'/layout/home'})
+        }
     },
     watch:{
         status(data1){
             /* 若登录成功则触发 */
             if(data1 == 200){
                 this.$store.dispatch('userData',this.loginData.profile)
-                this.$router.replace({
-                    path:'/layout/home'
-                })
+                this.tourist()
             }
         }
     },
@@ -65,25 +69,26 @@ export default {
 .signIn{
     display: flow-root;
     max-width: 800px;
-    margin: 100px auto;
-    overflow: hidden;
-    background-color: aqua;
+    margin: 10% auto;
+    border-top-right-radius: 20%;
+    background-image: linear-gradient(to right bottom,rgb(247, 247, 90),#5d85a8);
 }
 .user{
+    position: relative;
     width: 50%;
     height: 300px;
     margin: 10% auto;
     background-color: antiquewhite;
 }
-.user q{
-    display: block;
-    line-height: 100px;
+.user h3{
+    height: 30%;
+    line-height: 500%;
     font-size: 20px;
     font-weight: bold;
     text-align: center;
-    background-color: yellowgreen;
+    background-color: #5d85a8;
 }
-.user > div{
+.user div{
     margin: 7% auto;
 }
 .user input{
@@ -100,5 +105,17 @@ export default {
     margin: 0 auto;
     border: 1px solid rgba(0, 0, 0, 0.479);
     background-color: inherit;
+}
+.user sub{
+    position: absolute;
+    padding: 5px 10px;
+    vertical-align: 0%;
+    right: 0;
+    bottom: 0;
+}
+p{
+    font-size: 9px;
+    text-align: right;
+    padding: 10px;
 }
 </style>
