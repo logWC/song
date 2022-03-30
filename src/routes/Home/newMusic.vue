@@ -53,7 +53,7 @@ export default {
 <style scoped>
 h3{margin: 20px 15px;}
 .recommendNewMusic{
-    margin-left: 7px;
+    margin: 0px 20px;
 }
 .recommendNewMusic img{
     width: 50px;
