@@ -1,9 +1,9 @@
 <template>
     <div>
-        <router-link to="/layout/home">主页</router-link>
-        <router-link to="/layout/topic">榜单</router-link>
-        <router-link to="/layout/mine">我的</router-link>
-        <router-link to="/layout/search">搜索</router-link>
+        <router-link active-class="active" to="/layout/home">主页</router-link>
+        <router-link active-class="active" to="/layout/topic">榜单</router-link>
+        <router-link active-class="active" to="/layout/mine">我的</router-link>
+        <router-link active-class="active" to="/layout/search">搜索</router-link>
     </div>
 </template>
 <script>
@@ -15,14 +15,16 @@ export default {
 div{
     display: flex;
     justify-content: space-between;
-    background-color: aquamarine;
 }
 a{
     flex-grow: 1;
     text-align: center;
     line-height: 30px;
+    color: black;
+    background-color: rgb(68, 140, 212);
+    transition: all 0.1s;
 }
-.red{
-    background-color: red;
+.active{
+    background-color: antiquewhite;
 }
 </style>
