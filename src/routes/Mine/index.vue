@@ -4,7 +4,7 @@
             <img :src="profile.avatarUrl" alt="正在加载">
             <p> {{profile.nickname}} </p>
         </div>
-        <div @click="likeListm" class="likeList" v-if="likeDataList != null && likeDataList.length!=0">
+        <div @click="likeListm" class="likeList" v-if="likeDataList">
             <img :src="likeDataList[0].al.picUrl">
             <div>
                 <p>我喜欢的音乐</p>
@@ -22,8 +22,7 @@ export default {
     name:'Mine',
     methods: {
         logout(){
-            /* 退出登录 */
-            // 清除vuex的个人信息
+            /* 退出登录、清除vuex的个人信息、转换路由 */
             this.$store.dispatch('clearDate',['profile','likeDataList'])
             this.$api.logout()
             .then(content=>this.$router.replace('/'))

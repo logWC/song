@@ -3,8 +3,9 @@
         <div class="user">
             <h3>网易云登录</h3>
             <div>
-                <input type="text" v-model="phone" placeholder="手机号" />
-                <input type="password" v-model="password" placeholder="密码" />
+                <input @keyup.enter="removeFocus" @focus="error=false" type="text" v-model="phone" placeholder="手机号" />
+                <input ref="password" @keyup.enter="submitTo" @focus="error=false" type="password" v-model="password" placeholder="密码" />
+                <span class="error" v-if="error">手机号或密码错误，请重新输入</span>
             </div>
             <button @click="logon">登录</button>
             <sub @click="tourist">游客模式</sub>
@@ -22,10 +23,17 @@ export default {
             phone:null,
             password:null,
             signIn:false,
-            status:null
+            status:null,
+            error:false
         }
     },
     methods: {
+        removeFocus(){
+            this.$refs.password.focus()
+        },
+        submitTo(){
+            this.logon()
+        },
         statusMethod(){
             /* 验证登录状态，若为登录状态则跳到主页，否则显示登录页面 */
             this.$api.loginStatus()
@@ -44,7 +52,7 @@ export default {
                 this.loginData = content.data
                 this.status = content.status
             })
-            .catch(error => console.log(error))
+            .catch(error => this.error = true)
         },
         tourist(){
             /* 清空vuex的数据、转换路由 */
@@ -88,16 +96,23 @@ export default {
     text-align: center;
     background-color: #5d85a8;
 }
-.user div{
+.user > div{
+    width: 80%;
     margin: 7% auto;
 }
-.user input{
+.user > div > input{
     box-sizing: border-box;
     display: block;
-    width: 80%;
-    margin: 2% auto;
+    width: 100%;
     padding: 10px;
     background-color: aquamarine;
+}
+.user > div > input:first-of-type{
+    margin-bottom: 2%;
+}
+.error{
+    font-size: 9px;
+    color: rgb(201, 15, 15);
 }
 .user button{
     display: block;
