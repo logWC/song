@@ -1,11 +1,10 @@
 <template>
     <div>
         <div>
-            <div>
-                <h3>热门推荐</h3>
+            <div v-if="recommendList.length">
+                <h3>定制推荐</h3>
             </div>
-            <div class="zsq">
-                <!-- `/tjgdxq?id=${item.id}&title=${item.name}` -->
+            <div class="tbody">
                 <router-link tag="div" v-for="item in recommendList" :to="{
                     path:'/tjgdxq',
                     query:{
@@ -32,7 +31,7 @@ export default {
         // 获取推荐歌单
         this.$api.recommend()
         .then(({data}) => {this.recommendList = data.recommend})
-        .catch(error => alert(error))
+        .catch(error => console.log(error))
     },
 }
 </script>
@@ -40,23 +39,23 @@ export default {
 h3{
     margin: 15px;
 }
-.zsq{
+.tbody{
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
     text-align: justify;
 }
-.zsq > div{
+.tbody > div{
     margin: 3px;
 }
-.zsq img{
+.tbody img{
     display: inline-block;
     width: 100px;
     height: 100px;
     border: 1px solid black;
     vertical-align: buttom;
 }
-.zsq span{
+.tbody span{
     width: 100px;
     line-height: 1.5em;
     max-height: 3em;
