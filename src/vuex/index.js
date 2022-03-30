@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 const state = {
     profile:null,
-    likeDataList:[]
+    likeDataList:null
 }
 const getters = {}
 const actions = {
@@ -26,7 +26,6 @@ const actions = {
     },
     clearDate({commit},arr){
         /* 清空state[...arr] */
-        console.log(arr)
         commit('clearDate',arr)
     }
 }
