@@ -1,9 +1,11 @@
 <template>
     <div>
-        <Nav />
-        <keep-alive>
-            <router-view />
-        </keep-alive>
+        <div class="loyoutClass">
+            <Nav />
+            <keep-alive>
+                <router-view />
+            </keep-alive>
+        </div>
     </div>
 </template>
 <script>
@@ -15,3 +17,10 @@ export default {
     }
 }
 </script>
+<style scoped>
+.loyoutClass{
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: antiquewhite;
+}
+</style>
