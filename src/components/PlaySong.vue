@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="thead" :class="{whole1:!boole,whole2:boole}" @mouseleave="out" @mouseenter="penetrate">
+        <div class="thead" :class="{whole1:boole,whole2:!boole}" @mouseleave="out(2000)" @mouseenter="penetrate">
             <img @click="clickSongImg" :src="picUrl" alt="加载出错啦" />
             <audio ref="audio" controls autoplay="autoplay" :src="audioSrc">
                 对不起，你的浏览器不支持audio标签，请升级或更换浏览器进行播放
@@ -72,16 +72,17 @@ export default {
             removeEventListener('popstate',this.open)
         },
         penetrate(){
-            /* 鼠标进入元素 */
-            this.boole=true
+            /* 鼠标穿入元素 */
+            this.boole=false
             clearTimeout(this.setTime)
         },
-        out(){
-            /* 鼠标离开元素 */
-            this.setTime = setTimeout(()=>this.boole=false,2000)
+        out(time){
+            /* 鼠标穿出元素 */
+            this.setTime = setTimeout(()=>this.boole=true,time)
         }
     },
     created(){
+        this.out(4000)
         // 设置全局总线事件
         this.$bus.$on('music',this.music)
     },
@@ -108,10 +109,6 @@ export default {
 .block{
     display: block;
 }
-/* .whole{
-    width: 100%;
-    position: fixed;
-} */
 .whole1{
     top:calc(100vh - 10px);
     border-top: 10px solid rgba(61, 45, 45);
