@@ -1,8 +1,13 @@
 <template>
-    <div v-if="signIn">
-        <input type="text" v-model="phone" placeholder="用户名" /> <br /><br />
-        <input type="password" v-model="password" placeholder="密码" /> <br /><br />
-        <button @click="logon">登录</button>
+    <div class="signIn" v-if="signIn">
+        <div class="user">
+            <q>网易云登录</q>
+            <div>
+                <input type="text" v-model="phone" placeholder="手机号" />
+                <input type="password" v-model="password" placeholder="密码" />
+            </div>
+            <button @click="logon">登录</button>
+        </div>
     </div>
 </template>
 <script>
@@ -12,8 +17,8 @@ export default {
         return {
             userData:null,
             loginData:null,
-            phone:17329790734,
-            password:'123qweQWE',
+            phone:null,
+            password:null,
             signIn:false,
             status:null
         }
@@ -56,3 +61,44 @@ export default {
     },
 }
 </script>
+<style scoped>
+.signIn{
+    display: flow-root;
+    max-width: 800px;
+    margin: 100px auto;
+    overflow: hidden;
+    background-color: aqua;
+}
+.user{
+    width: 50%;
+    height: 300px;
+    margin: 10% auto;
+    background-color: antiquewhite;
+}
+.user q{
+    display: block;
+    line-height: 100px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    background-color: yellowgreen;
+}
+.user > div{
+    margin: 7% auto;
+}
+.user input{
+    box-sizing: border-box;
+    display: block;
+    width: 80%;
+    margin: 2% auto;
+    padding: 10px;
+    background-color: aquamarine;
+}
+.user button{
+    display: block;
+    padding: 5px 30px;
+    margin: 0 auto;
+    border: 1px solid rgba(0, 0, 0, 0.479);
+    background-color: inherit;
+}
+</style>
