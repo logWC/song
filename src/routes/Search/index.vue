@@ -1,8 +1,9 @@
 <template>
     <div>
-        <div class="heads">
-            <!-- 搜索框及搜索建议 -->
-            <div>
+        <div>
+            <!-- 搜索框、历史、搜索建议 -->
+            <div class="search">
+                <!-- 搜索框 -->
                 <input ref="inpu" type="text" @keyup="throttle(searchContent)" @keyup.enter="clickSearch(searchContent)" v-model="searchContent" />
                 <button @click="clickSearch(searchContent)">搜索</button>
             </div>
@@ -11,23 +12,23 @@
                 <span>历史</span>
                 <div>
                     <div>
-                        <span @click="clickHistory(name)" v-for="name in historyList" :key="name">
+                        <span @click="clickSearch(name)" v-for="name in historyList" :key="name">
                             {{name}}
                         </span>
                     </div>
                 </div>
             </div>
-            <ul>
+            <ul class="proposal">
                 <!-- 搜索建议 -->
                 <li @click="clickSearch(item.name)" v-for="item in proposalList" :key="item.id">
                     {{item.name}}
                 </li>
             </ul>
         </div>
-        <!-- 单曲 -->
-        <div class="bodys">
+        <!-- 歌曲列表 -->
+        <div class="bodys" v-if="searchList.length">
             <p>单曲</p>
-            <ul v-if="searchList.length && searchContent" @click.once="idListMe">
+            <ul @click.once="idListMe">
                 <li v-for="(item,index) in searchList" @click="play(item.id,index)" :key="item.id">
                     <p> {{item.name}} </p>
                     <span> {{item.artists | songName}} - {{item.album.name}} </span>
@@ -52,26 +53,21 @@ export default {
     },
     methods: {
         clickSearch(content){
+            this.searchContent = content
             /* 获取搜索结果*/
             this.searchList = []
             content = content.trim()
             if(!content)return
             this.historyListLRU(content)
-            // 停止获取建议
+            // 停止获取建议、获取歌曲列表
             this.proposalBoole = false
             this.$api.search(content)
             .then(({data}) => {
                 this.searchList = data.result.songs
-                this.idJoin()
                 this.proposalList = []
+                this.idList = this.searchList.map(val => val.id)
                 })
-            .catch(error => alert("出错啦",error))
-        },
-        idJoin(){
-            this.idList = []
-            this.searchList.forEach(
-                val => this.idList.push(val.id)
-            )
+            .catch(error => console.log("出错啦",error))
         },
         idListMe(){
             this.$bus.$emit('musicIdList',this.idList)
@@ -103,11 +99,6 @@ export default {
         },
         play(id,index){
             this.$bus.$emit('currentSong',id,index)
-        },
-
-        clickHistory(name){
-            this.searchContent = name
-            this.clickSearch(name)
         },
         historyListLRU(content){
             /* 使用LRU算法对搜索历史进行存储 */
@@ -159,57 +150,60 @@ export default {
 }
 </script>
 <style scoped>
-.heads{
+.search{
     box-sizing: border-box;
-    width: 100%;
-    margin: 0 auto;
-    background: rgb(30, 255, 0);
+    height: 40px;
+    margin: 5% auto 2%;
 }
-input{
+.search > input{
     box-sizing: border-box;
     width: 80%;
-    height: 30px;
-    margin: 1.5%;
-    padding: 0 3px;
-    outline: none;
-    border: 1px solid #0000005d;
+    height: inherit;
+    padding: 0 10px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background-color: aliceblue;
 }
-button{
-    width: 15%;
-    height: 30px;
+.search > button{
+    width: 20%;
+    height: inherit;
     padding: 0;
     border: none;
     vertical-align: middle;
-    border: 1px solid #00000080;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background-color: rgb(78, 106, 131);
+}
+.search > button:hover{
+    background-color: rgb(207, 123, 12);
 }
 .history{
     box-sizing: border-box;
-    background-color: #c2c0c0;
     height: 30px;
     overflow: hidden;
+    margin: 2% auto;
 }
 .history > span{
-    vertical-align: text-top;
     display: inline-block;
     width: 15%;
     height: 100px;
+    vertical-align: text-top;
     text-align: center;
     font-size: 12px;
     font-weight: bold;
     padding-top: 8px;
-    background-color: aqua;
+    background-color: aliceblue;
 }
 .history > div{
-    vertical-align: top;
     display: inline-block;
     width: 85%;
-    background-color: cadetblue;
+    vertical-align: top;
+    background-color: #5d85a8;
 }
 .history > div > div{
     white-space: nowrap;
-    overflow-x: scroll;
+    overflow-x: auto;
     padding-bottom: 20px;
-    background-color: burlywood;
 }
 .history > div > div > span{
     vertical-align: top;
@@ -220,13 +214,20 @@ button{
     margin: 0 5px;
     cursor: default;
 }
+.proposal{
+    z-index: 2;
+}
 .bodys{
     background-color: antiquewhite;
 }
-ul{
-    margin: 10px;
+.bodys > p{
+    font-weight: bold;
+    outline: none;
 }
-li{
+ul,.bodys > p{
+    margin: 0 10px;
+}
+li,.bodys > p{
     border-bottom: 1px solid #c2c0c0;
     padding: 10px;
 }
