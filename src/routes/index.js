@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 export default new VueRouter({
     mode:'hash',
-    linkActiveClass:'active',
     routes: [
         {
             // 登录页
@@ -12,6 +11,7 @@ export default new VueRouter({
             component:()=>import('./Logon.vue')
         },
         {
+            // 主页、榜单、我的、搜索
             path:'/layout',
             name:'Layout',
             component:()=>import('./Layout.vue'),
