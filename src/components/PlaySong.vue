@@ -5,10 +5,10 @@
             <audio ref="audio" controls autoplay="autoplay" :src="audioSrc">
                 对不起，你的浏览器不支持audio标签，请升级或更换浏览器进行播放
             </audio>
-            <button>上一首</button>
+            <!-- <button>上一首</button>
             <button ref="pause" @click="suspend">暂停</button>
             <button class="none" ref="play" @click="play">播放</button>
-            <button>下一首</button>
+            <button>下一首</button> -->
         </div>
         <PlaySongDetails v-show="false" />
     </div>
@@ -111,7 +111,7 @@ export default {
 }
 .whole1{
     top:calc(100vh - 10px);
-    border-top: 10px solid rgba(61, 45, 45);
+    border-top: 10px solid rgba(61, 45, 45, 0.274);
 }
 .whole2{
     top:calc(100vh - 50px);
