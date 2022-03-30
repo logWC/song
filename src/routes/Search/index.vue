@@ -131,6 +131,11 @@ export default {
                 }
             }
             return ""
+        },
+        getHistoryList(){
+            if(this.getCookie('songHistoryList')){
+                this.historyList = JSON.parse(this.getCookie('songHistoryList'))
+            }
         }
     },
     filters:{
@@ -143,9 +148,7 @@ export default {
         }
     },
     created() {
-        if(this.getCookie('songHistoryList')){
-            this.historyList = JSON.parse(this.getCookie('songHistoryList'))
-        }
+        this.getHistoryList()
     },
 }
 </script>
