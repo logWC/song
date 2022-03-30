@@ -1,11 +1,16 @@
 <template>
     <div>
         <div>
-            <!-- 搜索框、历史、搜索建议 -->
             <div class="search">
                 <!-- 搜索框 -->
                 <input ref="inpu" type="text" @keyup="throttle(searchContent)" @keyup.enter="clickSearch(searchContent)" v-model="searchContent" />
                 <button @click="clickSearch(searchContent)">搜索</button>
+                <ul class="proposal">
+                    <!-- 搜索建议 -->
+                    <li @click="clickSearch(item.name)" v-for="item in proposalList" :key="item.id">
+                        {{item.name}}
+                    </li>
+                </ul>
             </div>
             <div class="history" v-if="!searchContent || proposalList==[]">
                 <!-- 历史记录 -->
@@ -18,12 +23,6 @@
                     </div>
                 </div>
             </div>
-            <ul class="proposal">
-                <!-- 搜索建议 -->
-                <li @click="clickSearch(item.name)" v-for="item in proposalList" :key="item.id">
-                    {{item.name}}
-                </li>
-            </ul>
         </div>
         <!-- 歌曲列表 -->
         <div class="bodys" v-if="searchList.length">
@@ -157,8 +156,9 @@ export default {
     box-sizing: border-box;
     height: 40px;
     margin: 5% auto 2%;
+    position: relative;
 }
-.search > input{
+.search input{
     box-sizing: border-box;
     width: 80%;
     height: inherit;
@@ -167,7 +167,7 @@ export default {
     border-bottom-left-radius: 10px;
     background-color: aliceblue;
 }
-.search > button{
+.search button{
     width: 20%;
     height: inherit;
     padding: 0;
@@ -177,8 +177,15 @@ export default {
     border-bottom-right-radius: 10px;
     background-color: rgb(78, 106, 131);
 }
-.search > button:hover{
+.search button:hover{
     background-color: rgb(207, 123, 12);
+}
+.proposal{
+    width: 100%;
+    background-color: #c2c0c0;
+    position: absolute;
+    top: 40px;
+    /* left: 0; */
 }
 .history{
     box-sizing: border-box;
@@ -217,9 +224,6 @@ export default {
     margin: 0 5px;
     cursor: default;
 }
-.proposal{
-    z-index: 2;
-}
 .bodys{
     background-color: antiquewhite;
 }
@@ -227,10 +231,10 @@ export default {
     font-weight: bold;
     outline: none;
 }
-ul,.bodys > p{
+bodys ul,.bodys > p{
     margin: 0 10px;
 }
-li,.bodys > p{
+body li,.bodys > p{
     border-bottom: 1px solid #c2c0c0;
     padding: 10px;
 }
