@@ -24,24 +24,24 @@ export default {
             picUrl:require('../assets/logo.png'),
             musicObj:null,
             boole:false,
+            playsongdetailsBoole:false,
             setTime:null
         }
     },
     methods: {
         music(id){
             /* 播放音乐 */
-            this.$refs.play.style.display = "none"
-            this.$refs.pause.style.display = "inline-block"
-            // 获取歌曲pic
+            // this.$refs.play.style.display = "none"
+            // this.$refs.pause.style.display = "inline-block"
             this.$api.songDetail(id)
             .then(content => this.picUrl = content.data.songs[0].al.picUrl)
-            // 获取歌曲url
             this.$api.song(id)
             .then(val => {
                 let url = val.data.data[0].url
                 if(url){
                     this.audioSrc =  url + '?time=' + Math.random();
                 }else{
+                    // 当url为null时，播放下一首
                     this.$bus.$emit('nextSong')
                 }
             })
@@ -63,12 +63,12 @@ export default {
         },
         clickSongImg(){
             /* 点击进入歌词页 */
-            this.boole = !this.boole
+            this.playsongdetailsBoole = !this.playsongdetailsBoole
             history.pushState(null,null,document.URL)
             addEventListener('popstate',this.open)
         },
         open(){
-            this.boole = !this.boole
+            this.playsongdetailsBoole = !this.playsongdetailsBoole
             removeEventListener('popstate',this.open)
         },
         penetrate(){
@@ -111,7 +111,7 @@ export default {
 }
 .whole1{
     top:calc(100vh - 10px);
-    border-top: 10px solid rgba(61, 45, 45, 0.274);
+    border-top: 10px solid rgba(61, 45, 45, 0.13);
 }
 .whole2{
     top:calc(100vh - 50px);
