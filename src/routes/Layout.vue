@@ -21,6 +21,5 @@ export default {
 .loyoutClass{
     max-width: 900px;
     margin: 0 auto;
-    background-color: antiquewhite;
 }
 </style>

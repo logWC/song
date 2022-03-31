@@ -30,7 +30,7 @@ export default {
     created() {
         // 获取推荐歌单
         this.$api.recommend()
-        .then(({data}) => {this.recommendList = data.recommend})
+        .then(({data}) => this.recommendList = data.recommend)
         .catch(error => console.log(error))
     },
 }

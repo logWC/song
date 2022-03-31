@@ -4,7 +4,7 @@
             <img :src="profile.avatarUrl" alt="正在加载">
             <p> {{profile.nickname}} </p>
         </div>
-        <div @click="likeListm" class="likeList" v-if="likeDataList">
+        <div class="likeList" @click="likeListm" v-if="likeDataList">
             <img :src="likeDataList[0].al.picUrl">
             <div>
                 <p>我喜欢的音乐</p>
