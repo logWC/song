@@ -21,10 +21,11 @@ a{
     text-align: center;
     line-height: 30px;
     color: black;
-    background-color: rgb(68, 140, 212);
+    background-color: rgb(78, 106, 131);
     transition: all 0.1s;
 }
 .active{
-    background-color: antiquewhite;
+    background-color: rgb(152, 169, 184);
+    /* background-color: antiquewhite; */
 }
 </style>
