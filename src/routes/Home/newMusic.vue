@@ -5,16 +5,20 @@
             <ul class="recommendNewMusic" @click.once="idListMe">
                 <li @click="play(item.id,index)" v-for="(item,index) in recommendNewMusicList" :key="item.id">
                     <img :src="item.picUrl" alt="item.name">
-                    <span>{{item.name}}</span>
-                    <span> {{item.song.artists[0].name}} </span>
+                    <div>
+                        <p>{{item.name}}</p>
+                        <span> {{item.song.artists | songName}} </span>
+                    </div>
                 </li>
             </ul>
         </div>
     </div>
 </template>
 <script>
+import {songName} from '@/mixins/index.js'
 export default {
     name:'newMusic',
+    mixins:[songName],
     data() {
         return {
             recommendNewMusicList:[],
@@ -23,23 +27,19 @@ export default {
     },
     methods: {
         play(id,index){
+            /* 点击播放单曲 */
             this.$bus.$emit('currentSong',id,index)
         },
         obtainRecommendNewMusicList(){
+            /* 获取歌曲列表、歌曲id列表 */
             this.$api.recommendNewMusic()
             .then(
                 ({data}) => {
                     this.recommendNewMusicList = data.result
-                    this.idJoin()
+                    this.idList = this.recommendNewMusicList.map(val => val.id)
             }
             )
             .catch(error => console.log(error))
-        },
-        idJoin(){
-            this.idList = []
-            this.recommendNewMusicList.forEach(
-                val => this.idList.push(val.id)
-            )
         },
         idListMe(){
             this.$bus.$emit('musicIdList',this.idList)
@@ -53,19 +53,25 @@ export default {
 <style scoped>
 h3{margin: 20px 15px;}
 .recommendNewMusic{
-    margin: 0px 20px;
+    margin: 20px;
 }
-.recommendNewMusic img{
-    width: 50px;
-    height: 50px;
-    /* 清除上下图片的缝隙 */
-    vertical-align: bottom;
+.recommendNewMusic li{
+    display: flex;
+    padding: 1px;
+}
+.recommendNewMusic li img{
+    width: 60px;
+    height: 60px;
+}
+.recommendNewMusic li div{
+    box-sizing: border-box;
+    height: 60px;
+    flex-grow: 1;
+    line-height: 20px;
+    padding: 10px;
 }
 .recommendNewMusic li span{
-    margin-left: 5px;
-    line-height: 45px;
-}
-.recommendNewMusic li span:last-of-type{
+    display: block;
     font-size: 9px;
 }
 </style>

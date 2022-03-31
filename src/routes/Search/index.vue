@@ -37,8 +37,10 @@
     </div>
 </template>
 <script>
+import {songName} from '@/mixins/index.js'
 export default {
     name:'Search',
+    mixins:[songName],
     data() {
         return {
             searchContent:"",
@@ -137,15 +139,6 @@ export default {
             }
         }
     },
-    filters:{
-        songName(val){
-            // 对单曲的各作者间使用 / 分割
-            return val.reduce(
-                (total,value) => {
-                    return total == "" ?  value.name : total + "/" + value.name
-                },"")
-        }
-    },
     created() {
         this.getHistoryList()
     },
@@ -165,7 +158,8 @@ export default {
     padding: 0 10px;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
-    background-color: aliceblue;
+    background-color: rgb(152, 169, 184);
+    /* background-color: aliceblue; */
 }
 .search button{
     width: 20%;
@@ -185,13 +179,13 @@ export default {
     background-color: #c2c0c0;
     position: absolute;
     top: 40px;
-    /* left: 0; */
 }
 .history{
     box-sizing: border-box;
     height: 30px;
     overflow: hidden;
     margin: 2% auto;
+    background-color: #5d85a8;
 }
 .history > span{
     display: inline-block;
@@ -208,7 +202,6 @@ export default {
     display: inline-block;
     width: 85%;
     vertical-align: top;
-    background-color: #5d85a8;
 }
 .history > div > div{
     white-space: nowrap;
@@ -222,7 +215,6 @@ export default {
     border-radius: 5px;
     padding: 8px 2px 0 8px;
     margin: 0 5px;
-    cursor: default;
 }
 .bodys{
     background-color: antiquewhite;

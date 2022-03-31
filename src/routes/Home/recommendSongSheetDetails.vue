@@ -22,8 +22,10 @@
     </div>
 </template>
 <script>
+import {songName} from '@/mixins/index.js'
 export default {
     name:"recommendSongSheetDetails",
+    mixins:[songName],
     data() {
         return {
             songList:"",
@@ -52,15 +54,6 @@ export default {
             this.$bus.$emit('musicIdList',this.idList)
         }
     },
-    filters:{
-        songName(val){
-            // 对单曲的各作者间使用 / 分割
-            return val.reduce(
-                (total,value) => {
-                    return total == "" ?  value.name : total + "/" + value.name
-                },"")
-        }
-    },
     created() {
         this.getSongIdList()
     }
@@ -79,7 +72,6 @@ ul{
     margin: 30px 15px 0px;
 }
 li{
-    /* border-top: 1px solid yellowgreen; */
     padding: 5px;
 }
 li span:first-of-type{
