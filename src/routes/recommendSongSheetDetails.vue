@@ -6,7 +6,7 @@
             <img :src="songList.coverImgUrl" alt="加载出错" />
             <div>
                 <h4>{{$route.query.title}}</h4>
-                <p>歌单创作者id: {{songList.userId}}</p>
+                <p>歌单创作者: {{$route.query.name}}</p>
             </div>
         </div>
         <div class="body-div">
@@ -42,13 +42,10 @@ export default {
             .then(
                 content => {
                     this.songList = content.data.playlist
-                    this.idJoin()
+                    this.idList = this.songList.tracks.map(val => val.id)
                 }
             )
             .catch(error => alert(`获取歌曲失败: ${error}`))
-        },
-        idJoin(){
-            this.idList = this.songList.tracks.map(val => val.id)
         },
         idListMe(){
             this.$bus.$emit('musicIdList',this.idList)

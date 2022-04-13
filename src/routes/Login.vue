@@ -11,11 +11,12 @@
             <sub @click="tourist">游客模式</sub>
         </div>
         <p>注：游客模式部分功能会受限</p>
+        <router-view></router-view>
     </div>
 </template>
 <script>
 export default {
-    name:"Logon",
+    name:"Login",
     data() {
         return {
             userData:null,
@@ -55,8 +56,8 @@ export default {
             .catch(error => this.error = true)
         },
         tourist(){
-            /* 清空vuex的数据、转换路由 */
-            this.$router.replace({path:'/layout/home'})
+            /* 转换路由 */
+            this.$router.replace('/layout/home')
         }
     },
     watch:{
@@ -70,6 +71,10 @@ export default {
     },
     created() {
         this.statusMethod()
+        console.log(1)
+    },
+    destroyed() {
+        console.log('登录组件销毁了')
     },
 }
 </script>

@@ -7,14 +7,16 @@ export default new VueRouter({
         {
             // 登录页
             path:'/',
-            name:'Logon',
-            component:()=>import('./Logon.vue')
+            name:'Login',
+            component:()=>import('./Login.vue'),
+            children:[]
         },
         {
             // 主页、榜单、我的、搜索
             path:'/layout',
             name:'Layout',
             component:()=>import('./Layout.vue'),
+            redirect:'/layout/home',
             children:[
                 {
                     path:'home',
@@ -42,13 +44,13 @@ export default new VueRouter({
             // 歌单的歌曲列表
             path:'/tjgdxq',
             name:'recommendSongSheetDetails',
-            component:()=>import('./Home/recommendSongSheetDetails.vue')
+            component:()=>import('./recommendSongSheetDetails.vue')
         },
         {
             // like列表
             path:'/likes',
             name:'likes',
-            component:()=>import('./Mine/likes.vue')
+            component:()=>import('./likes.vue')
         }
     ]
 })

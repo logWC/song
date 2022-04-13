@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="root">
         <router-link active-class="active" to="/layout/home">主页</router-link>
         <router-link active-class="active" to="/layout/topic">榜单</router-link>
         <router-link active-class="active" to="/layout/mine">我的</router-link>
@@ -12,9 +12,11 @@ export default {
 }
 </script>
 <style scoped>
-div{
+.root{
     display: flex;
     justify-content: space-between;
+    border-radius: 10px;
+    overflow: hidden;
 }
 a{
     flex-grow: 1;
@@ -26,6 +28,5 @@ a{
 }
 .active{
     background-color: rgb(152, 169, 184);
-    /* background-color: antiquewhite; */
 }
 </style>

@@ -9,7 +9,8 @@
                     path:'/tjgdxq',
                     query:{
                         'id':item.id,
-                        'title':item.name
+                        'title':item.name,
+                        'name':item.creator.nickname
                     }
                 }" :key="item.id">
                     <img :src="item.picUrl" alt="加载出错">
@@ -30,9 +31,9 @@ export default {
     created() {
         // 获取推荐歌单
         this.$api.recommend()
-        .then(({data}) => this.recommendList = data.recommend)
+        .then(({data}) => {this.recommendList = data.recommend})
         .catch(error => console.log(error))
-    },
+    }
 }
 </script>
 <style scoped>

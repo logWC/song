@@ -1,17 +1,15 @@
 <template>
-    <div>
-        <div class="loyoutClass">
-            <Nav />
-            <keep-alive>
-                <router-view />
-            </keep-alive>
-        </div>
+    <div class="loyoutClass">
+        <Nav />
+        <keep-alive include="Home">
+            <router-view></router-view>
+        </keep-alive>
     </div>
 </template>
 <script>
 import Nav from '../components/Nav.vue'
 export default {
-    name:'Layou',
+    name:'Layout',
     components:{
         Nav
     }
@@ -20,6 +18,8 @@ export default {
 <style scoped>
 .loyoutClass{
     max-width: 900px;
+    min-height: 900px;
     margin: 0 auto;
+    background-color: rgb(222, 232, 240);
 }
 </style>

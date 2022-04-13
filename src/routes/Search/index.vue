@@ -141,6 +141,10 @@ export default {
     },
     created() {
         this.getHistoryList()
+        console.log('组件创建了')
+    },
+    destroyed() {
+        console.log('组件销毁了')
     },
 }
 </script>
