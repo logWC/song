@@ -27,8 +27,8 @@
         <!-- 歌曲列表 -->
         <div class="bodys" v-if="searchList.length">
             <p>单曲</p>
-            <ul @click.once="idListMe">
-                <li v-for="(item,index) in searchList" @click="play(item.id,index)" :key="item.id">
+            <ul @click.once="$idListMe(idList)">
+                <li @click="$play(item.id)" v-for="item in searchList" :key="item.id">
                     <p> {{item.name}} </p>
                     <span> {{item.artists | songName}} - {{item.album.name}} </span>
                 </li>
@@ -59,6 +59,7 @@ export default {
             this.searchList = []
             content = content.trim()
             if(!content)return
+            this.throttle(content)
             this.historyListLRU(content)
             // 停止获取建议、获取歌曲列表
             this.proposalBoole = false
@@ -70,17 +71,14 @@ export default {
                 })
             .catch(error => console.log("出错啦",error))
         },
-        idListMe(){
-            this.$bus.$emit('musicIdList',this.idList)
-        },
         throttle(content){
-            // 对搜索建议进行防抖
-                if(this.i)clearTimeout(this.i)
-                this.i = setTimeout(
-                    ()=>{
-                        this.clickSearchSuggest(content)
-                    },500)
-            },
+        // 对搜索建议进行防抖
+            if(this.i)clearTimeout(this.i)
+            this.i = setTimeout(
+                ()=>{
+                    this.clickSearchSuggest(content)
+                },500)
+        },
         clickSearchSuggest(suggest){
             // 获取搜索建议
             suggest = suggest.trim()
@@ -94,12 +92,10 @@ export default {
                     this.proposalList = data.result.songs
                 }else{
                     this.proposalBoole = true
+                    // this.proposalList = data.result.songs
                 }
             })
             .catch(error=>console.log("出错了",error))
-        },
-        play(id,index){
-            this.$bus.$emit('currentSong',id,index)
         },
         historyListLRU(content){
             /* 使用LRU算法对搜索历史进行存储 */
@@ -110,42 +106,19 @@ export default {
             )
             this.historyList.unshift(content)
             if(this.historyList.length == 11)this.historyList.pop()
-            this.setCookie("songHistoryList",this.historyList,7)
-        },
-        setCookie(name,data,time){
-            /* 存储进cookie*/
-            let h = `${name}=${JSON.stringify(data)}`
-            let expires = new Date()
-            expires.setTime(expires.getTime()+time*7*24*60*60*1000)
-            expires = "expires=" + expires.toGMTString()
-            document.cookie=`${h};${expires}`
-        },
-        getCookie(name){
-            /* 获取cookie数据 */
-            name = name + "="
-            let coo = document.cookie
-            let c = coo.split(";")
-            for(let i=0;i<c.length;i++){
-                let val = c[i].trim()
-                if(val.indexOf(name) == 0){
-                    return val.replace(name,"")
-                }
-            }
-            return ""
+            this.$setCookie("songHistoryList",this.historyList,7)
         },
         getHistoryList(){
-            if(this.getCookie('songHistoryList')){
-                this.historyList = JSON.parse(this.getCookie('songHistoryList'))
+            /* 获取历史记录 */
+            var data = this.$getCookie('songHistoryList')
+            if(data){
+                this.historyList = JSON.parse(data)
             }
         }
     },
     created() {
         this.getHistoryList()
-        console.log('组件创建了')
-    },
-    destroyed() {
-        console.log('组件销毁了')
-    },
+    }
 }
 </script>
 <style scoped>
