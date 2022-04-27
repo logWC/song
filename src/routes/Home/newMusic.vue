@@ -2,9 +2,9 @@
     <div>
         <div v-if="recommendNewMusicList.length">
             <h3>新音乐</h3>
-            <ul class="recommendNewMusic" @click.once="idListMe">
-                <li @click="play(item.id,index)" v-for="(item,index) in recommendNewMusicList" :key="item.id">
-                    <img :src="item.picUrl" alt="item.name">
+            <ul class="recommendNewMusic" @click.once="$idListMe(idList)">
+                <li @click="$play(item.id)" v-for="item in recommendNewMusicList" :key="item.id">
+                    <img v-lazy="item.picUrl" :alt="item.name">
                     <div>
                         <p>{{item.name}}</p>
                         <span> {{item.song.artists | songName}} </span>
@@ -26,10 +26,6 @@ export default {
         }
     },
     methods: {
-        play(id,index){
-            /* 点击播放单曲 */
-            this.$bus.$emit('currentSong',id,index)
-        },
         obtainRecommendNewMusicList(){
             /* 获取歌曲列表、歌曲id列表 */
             this.$api.recommendNewMusic()
@@ -40,9 +36,6 @@ export default {
             }
             )
             .catch(error => console.log(error))
-        },
-        idListMe(){
-            this.$bus.$emit('musicIdList',this.idList)
         }
     },
     created() {

@@ -1,11 +1,11 @@
 <template>
     <div>
         <div class="thead" v-if="profile">
-            <img :src="profile.avatarUrl" alt="正在加载">
+            <img v-lazy="profile.avatarUrl" alt="正在加载">
             <p> {{profile.nickname}} </p>
         </div>
         <div class="likeList" @click="likeListm" v-if="likeDataList">
-            <img :src="likeDataList[0].al.picUrl">
+            <img v-lazy="likeDataList[0].al.picUrl">
             <div>
                 <p>我喜欢的音乐</p>
                 <span> {{likeDataList.length}}首 </span>

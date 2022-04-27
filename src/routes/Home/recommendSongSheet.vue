@@ -13,7 +13,7 @@
                         'name':item.creator.nickname
                     }
                 }" :key="item.id">
-                    <img :src="item.picUrl" alt="加载出错">
+                    <img v-lazy="item.picUrl" alt="加载出错">
                     <span> {{item.name}} </span>
                 </router-link>
             </div>

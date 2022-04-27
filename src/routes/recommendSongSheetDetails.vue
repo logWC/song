@@ -1,6 +1,5 @@
 <template>
     <div v-if="idList.length">
-        a
         <h3>歌单详情(默认20首)</h3>
         <div class="head-div">
             <img :src="songList.coverImgUrl" alt="加载出错" />
@@ -10,8 +9,8 @@
             </div>
         </div>
         <div class="body-div">
-            <ul @click.once="idListMe">
-                <li @click="play(item.id,index)" v-for="(item,index) in songList.tracks" :key="item.id">
+            <ul @click.once="$idListMe(idList)">
+                <li @click="$play(item.id)" v-for="item in songList.tracks" :key="item.id">
                     <div>
                         <span>{{item.name}}</span>
                         <span style="color:red"> {{item.ar | songName}} </span>
@@ -29,13 +28,11 @@ export default {
     data() {
         return {
             songList:"",
-            idList:[]
+            idList:[],
+            keyr:1
         }
     },
     methods: {
-        play(id,index){
-            this.$bus.$emit('currentSong',id,index)
-        },
         getSongIdList(){
             // 获取歌单的所有歌曲
             this.$api.songListDetails(this.$route.query.id)
@@ -46,13 +43,11 @@ export default {
                 }
             )
             .catch(error => alert(`获取歌曲失败: ${error}`))
-        },
-        idListMe(){
-            this.$bus.$emit('musicIdList',this.idList)
         }
     },
     created() {
         this.getSongIdList()
+        document.documentElement.scrollTop=0
     }
 }
 </script>
@@ -80,29 +75,27 @@ li span:last-of-type{
 .head-div{
     display: flex;
     height: 100px;
-    background-color: aqua;
     margin: 15px;
 }
 .head-div > div{
-    display: inline-block;
     flex-grow: 1;
-    height: 100%;
-    vertical-align: top;
+    box-sizing: border-box;
     background-color: rgb(6, 95, 32);
 }
 .head-div > div h4{
-    color: antiquewhite;
-    margin: 10px;
+    color: white;
     line-height: 1.5em;
     max-height: 3em;
-    overflow: hidden;
-    display: -webkit-box;
-    white-space: normal;
-    -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
 }
+.head-div > div p,.head-div > div h4{
+    margin: 10px;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+}
 .head-div > div p{
-    margin-left: 10px;
+    -webkit-line-clamp: 1;
 }
 .body-div{
     margin-top: 20px;

@@ -15,6 +15,10 @@ export default {
     loginStatus(){
         return axios.get(`/api/login/status?time=${time()}`)
     },
+    // 刷新登录状态
+    loginRefresh(){
+        return axios.get(`/api/login/refresh?time=${time()}`)
+    },
     // 退出登录
     logout(){
         return axios.get(`/api/logout?time=${time()}`)

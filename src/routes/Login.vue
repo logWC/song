@@ -10,6 +10,7 @@
             <button @click="logon">登录</button>
             <sub @click="tourist">游客模式</sub>
         </div>
+        <p>网站仅供学习使用</p>
         <p>注：游客模式部分功能会受限</p>
         <router-view></router-view>
     </div>
@@ -71,7 +72,6 @@ export default {
     },
     created() {
         this.statusMethod()
-        console.log(1)
     },
     destroyed() {
         console.log('登录组件销毁了')

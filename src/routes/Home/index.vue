@@ -8,7 +8,7 @@
 </template>
 <script>
 import recommendSongSheet from './recommendSongSheet.vue'
-import newMusic from './newMusic'
+import newMusic from './newMusic.vue'
 export default {
     name:'Home',
     components: { recommendSongSheet, newMusic },
@@ -17,6 +17,9 @@ export default {
     },
     deactivated() {
         console.log('路由组件失活了')
+    },
+    created() {
+        console.log('创建了')
     },
 }
 </script>
