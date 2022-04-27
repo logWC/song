@@ -1,8 +1,10 @@
 <template>
   <div>
-    <router-view></router-view>
-    <Tail />
+    <keep-alive include="Layout">
+      <router-view></router-view>
+    </keep-alive>
     <PlaySong />
+    <Tail />
   </div>
 </template>
 <script>
