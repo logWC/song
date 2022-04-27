@@ -42,6 +42,14 @@ const mutations = {
         arr.forEach(val => state[val] = null)
     }
 }
+window.addEventListener('beforeunload',()=>{
+    sessionStorage.setItem('state',JSON.stringify(state))
+})
+if(sessionStorage.getItem('state')){
+    Object.assign(state,JSON.parse(sessionStorage.getItem('state')))
+    sessionStorage.removeItem('state')
+}
+
 export default new Vuex.Store({
     state,
     mutations,
