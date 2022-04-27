@@ -56,17 +56,16 @@ export default {
         clickSearch(content){
             this.searchContent = content
             /* 获取搜索结果*/
-            this.searchList = []
             content = content.trim()
             if(!content)return
-            this.throttle(content)
-            this.historyListLRU(content)
+            this.proposalList = []
             // 停止获取建议、获取歌曲列表
             this.proposalBoole = false
+            this.throttle(content)
+            this.historyListLRU(content)
             this.$api.search(content)
             .then(({data}) => {
                 this.searchList = data.result.songs
-                this.proposalList = []
                 this.idList = this.searchList.map(val => val.id)
                 })
             .catch(error => console.log("出错啦",error))
@@ -88,7 +87,7 @@ export default {
             }
             this.$api.searchSuggest(suggest)
             .then(({data}) => {
-                if(this.proposalBoole || this.searchList==[]){
+                if(this.proposalBoole){
                     this.proposalList = data.result.songs
                 }else{
                     this.proposalBoole = true
