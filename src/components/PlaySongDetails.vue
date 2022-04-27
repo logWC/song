@@ -1,19 +1,18 @@
 <template>
     <div class="whole">
-        <span @click="signOut">a</span>
-        <div class="zsq">
-            <div ref="lyricDisplay">
-                <p :class="{
-                    red:currentTimeList[index] < currentTime && currentTime < currentTimeList[index+1]
-                }" v-for="(val,index) in currentContentList" :key="index">
-                    <span>{{val}}{{playDisplay(index)}} </span>
+        <input type="button" @click="con" value="无聊按钮" v-debounce />
+        <!-- <span @click="indexOut">&lt;</span> -->
+        <div class="zsq" ref="zsqRef">
+                <p :class="{red:currentTimeList[index-2] < currentTime && currentTime < currentTimeList[index-1]}"
+                    v-for="(val,index) in currentContentList" :key="index">
+                    {{val}}
+                    {{playDisplay(index)}}
                 </p>
-            </div>
         </div>
         <div class="bodys">
             <button @click="lastSong">上一首</button>
-            <button>暂停</button>
-            <button>播放</button>
+            <button @click="$emit('suspend')" v-if="!suspendBoolean">暂停</button>
+            <button @click="$emit('play')" v-else>播放</button>
             <button @click="nextSong">下一首</button>
         </div>
         <div>
@@ -26,39 +25,65 @@
 <script>
 export default {
     name:"PlaySongDetails",
+    props:['suspendBoolean'],
     data() {
         return {
-            currentTime:"",
+            currentTime:'',
             currentTimeList:[],
             currentContentList:[],
+            orderNum:0,
             idList:[],
-            shuffleIdList:[],
-            sign:0,
-            orderNum:0
+            index:'',
+            playList:null,
+            arrIndex:-1,
+            zsqRef:'',
+            map:new Map(),
+            width:0,
         }
     },
     methods: {
-        signOut(){
-            // 退出歌词
+        // 无聊按钮
+        con(){
+            console.log(Math.random())
+            this.$refs.zsqRef.scrollTop = 30
         },
+        // 退出歌词
+        indexOut(){
+        },
+        // 设置动态歌词
         playDisplay(index){
-            if(this.currentTimeList[index] < this.currentTime && this.currentTime < this.currentTimeList[index+1]){
-                // 设置动态歌词
-                this.$refs.lyricDisplay.style.top = -(index*30)+ 60 +"px"
+            if(this.arrIndex!=index && this.currentTimeList[index] < this.currentTime && this.currentTime < this.currentTimeList[index+1]){
+                console.log(index,window.getComputedStyle(this.zsqRef).fontSize)
+                this.arrIndex = index
+                this.zsqRef.scrollTop = this.map.get(index)
             }
         },
 
+        /* 改变播放顺序 */
         changeOrder(num){
-            /* 改变播放顺序 */
             this.orderNum = num
+            var id = this.playList[this.index]
+            var arr = JSON.parse(JSON.stringify(this.idList))
+            this.playList = num!=2?arr:this.shuffleMethod(arr)
+            this.index = this.playList.findIndex(val=>val==id)
         },
 
+        /* 使用shuffle算法进行随机排序 */
+        shuffleMethod(arr){
+            // 深克隆数组
+            let i = arr.length
+            for(i;i>0;i--){
+                let ran = Math.floor(Math.random()*i)
+                arr.push(arr.splice(ran,1)[0])
+            }
+            return arr
+        },
+        /* 发送获取歌词及时间的请求 */
         obtainLyric(id){
-            // 清空currentTimeList
+            // 清空时间
             this.currentTimeList = []
-            // 清空currentContentList
+            // 清空歌词
             this.currentContentList = []
-            // 获取歌词
             this.$api.lyric(id)
             .then(content => this.filterLRC(content.data.lrc.lyric))
             .catch(error=> console.log(`获取歌词失败${error}`))
@@ -67,6 +92,9 @@ export default {
             if (!value) return
             let lyric = value.split("\n")
             let reg = /\[\d*:\d*(\.|:)\d*/g
+            this.currentContentList.push('')
+            this.currentContentList.push('')
+            var index = 0
             lyric.forEach((val)=>{
                 // 转换时间为秒，并以键值对显示 时间：歌词
                 let timeReg = val.match(reg)
@@ -75,82 +103,101 @@ export default {
                     let min = parseFloat(timeReg[0].match(/\[\d*/g)[0].slice(1))
                     let sec = parseFloat(timeReg[0].match(/\d*\.\d/g)[0])
                     let time = min*60 + sec
-                    this.timeList(time,content)
+                    index++
+                    this.timeList(time,content,index)
                 }
             })
+            // 优化最后一句歌词动画
+            this.currentTimeList.push(999999)
+            this.currentContentList.push('')
+            this.currentContentList.push('')
         },
-        timeList(time,content){
-            /* 获取时间与及对应歌词 */
+        /* 获取时间与及对应歌词 */
+        timeList(time,content,index){
             this.currentTimeList.push(time)
             this.currentContentList.push(content)
-        },
-        timeUpdated(event){
-            this.currentTime = event.target.currentTime
-            if(event.target.ended){
-                this.nextSong(this.orderNum)
-            }
-        },
 
-        musicIdList(idList){
-            /* 自动获取歌曲id列表 */
-            this.idList = idList
-            this.shuffleIdList = []
-            this.shuffleMethod()
-        },
-        shuffleMethod(){
-            /* 使用shuffle算法进行随机排序 */
-            this.shuffleIdList = JSON.parse(JSON.stringify(this.idList))
-            let i = this.idList.length
-            for(i;i>0;i--){
-                let ran = Math.floor(Math.random()*i)
-                this.shuffleIdList.push(this.shuffleIdList.splice(ran,1)[0])
-            }
-        },
 
-        currentSong(id,index){
-            /* 点击歌曲时播放 */
-            if(this.orderNum == 2){
-                if(this.shuffleIdList.length){
-                    let index_1 = this.shuffleIdList.findIndex(val=>val==id)
-                    this.shuffleIdList.splice(this.sign,0,this.shuffleIdList.splice(index_1,1)[0])
-                }
-            }else{
-                this.sign = index
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+            context.font = "12px Arial";
+            var width = context.measureText(content).width
+            if(width>=300){
+                var i = Math.floor(width/300)
+                this.width+=i
             }
-            this.playSong(id)
+            this.map.set(index,(index*30)+this.width*30)
         },
-        lastSong(){
-            /* 上一首 */
-            this.sign = this.sign==0?0:this.sign-1
-            if(this.orderNum == 2){
-                this.playSong(this.shuffleIdList[this.sign])
-            }else{
-                this.playSong(this.idList[this.sign])
-            }
-        },
-        nextSong(wc=1){
-            /* 下一首 */
-            if(wc){
-                this.sign = this.sign==this.idList.length-1?0:this.sign+1
-                if(this.orderNum == 2){
-                    this.playSong(this.shuffleIdList[this.sign])
+        /* 实时获取播放时间 */
+        timeUpdated({target}){
+            this.currentTime = target.currentTime
+            if(target.ended){
+                if(this.orderNum==0){
+                    this.playSong(this.playList[this.index])
                 }else{
-                    this.playSong(this.idList[this.sign])
+                    this.nextSong()
                 }
-            }else{
-                this.playSong(this.idList[this.sign])
             }
         },
+
+        /* 获取歌曲id列表 */
+        musicIdList(idList){
+            this.idList = idList
+            this.playList = JSON.parse(JSON.stringify(idList))
+        },
+
+        /* 点击播放 */
+        currentSong(id){
+            this.playSong(id)
+            setTimeout(()=>{
+                // 下标修改为点击播放的歌曲的下标
+                if(this.orderNum==2){
+                    this.playList = this.shuffleMethod(this.playList)
+                }
+                this.index = this.playList.findIndex(val=>val==id)
+            },0)
+        },
+        /* 上一首 */
+        lastSong(){
+            if(this.playList==null)return
+            this.index = this.index==0?this.playList.length-1:this.index-1
+            this.playSong(this.playList[this.index])
+        },
+        /* 下一首 */
+        nextSong(){
+            if(this.playList==null)return
+            this.index = this.index==this.playList.length-1?0:this.index+1
+            this.playSong(this.playList[this.index])
+        },
+        // 获取歌曲url和歌词
         playSong(id){
+            var idList = JSON.parse(JSON.stringify(this.idList))
+            var playList = JSON.parse(JSON.stringify(this.playList))
+            var index = this.index
+            var orderNum = this.orderNum
+            var zsqRef = this.zsqRef
+            Object.assign(this.$data,this.$options.data())
+            this.idList = idList
+            this.playList = playList
+            this.index = index
+            this.orderNum = orderNum
+            this.zsqRef = zsqRef
             this.$bus.$emit('music',id)
-            this.obtainLyric(id)
+        },
+        elementMe(){
+            this.zsqRef = this.$refs.zsqRef
         }
     },
     created(){
         this.$bus.$on('musicIdList',this.musicIdList)
         this.$bus.$on('currentSong',this.currentSong)
+        this.$bus.$on('lastSong',this.lastSong)
         this.$bus.$on('nextSong',this.nextSong)
+        this.$bus.$on('obtainLyric',this.obtainLyric)
         this.$parent.$refs.audio.addEventListener('timeupdate',this.timeUpdated)
+    },
+    mounted() {
+        this.elementMe()
     },
     beforeDestroy(){
         removeEventListener('timeupdate',this.timeUpdated)
@@ -161,22 +208,26 @@ export default {
 .whole{
     width: 100%;
     height: calc(100vh);
+    min-height: 300px;
 }
 div{
     width: 100%;
 }
 .zsq{
+    font-family: Arial;
+    font-size: 12px;
+    width: 300px;
     height: 150px;
     overflow: auto;
+    background-color: antiquewhite;
 }
-.zsq > div{
-    position: relative;
+.zsq::-webkit-scrollbar{
+    display: none;
 }
 p{
     text-align: center;
     min-height: 30px;
     line-height: 30px;
-    background-color: antiquewhite;
 }
 .red{
     color: rgb(199, 170, 170);
