@@ -129,12 +129,13 @@ export default {
         },
         /* 实时获取播放时间 */
         timeUpdated({target}){
-            
+
             let time = target.currentTime
             while(this.currentTimeList[this.timeIndex] < time){
                 this.zsqRef.scrollTop = this.map.get(this.timeIndex)
                 this.timeIndex++
                 console.log(111)
+                console.log(this.map)
             }
             while(this.currentTimeList[this.timeIndex-1] > time){
                 this.zsqRef.scrollTop = this.map.get(this.timeIndex-2)
@@ -182,17 +183,7 @@ export default {
         },
         // 获取歌曲url和歌词
         playSong(id){
-            var idList = JSON.parse(JSON.stringify(this.idList))
-            var playList = JSON.parse(JSON.stringify(this.playList))
-            var index = this.index
-            var orderNum = this.orderNum
-            var zsqRef = this.zsqRef
-            Object.assign(this.$data,this.$options.data())
-            this.idList = idList
-            this.playList = playList
-            this.index = index
-            this.orderNum = orderNum
-            this.zsqRef = zsqRef
+            this.width = 0
             this.$bus.$emit('music',id)
         },
         elementMe(){
