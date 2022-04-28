@@ -3,10 +3,10 @@
         <input type="button" @click="con" value="无聊按钮" v-debounce />
         <!-- <span @click="indexOut">&lt;</span> -->
         <div class="zsq" ref="zsqRef">
-                <p :class="{red:currentTimeList[index-2] < currentTime && currentTime < currentTimeList[index-1]}"
+                <p :class="{red:timeIndex==index-1}"
                     v-for="(val,index) in currentContentList" :key="index">
                     {{val}}
-                    {{playDisplay(index)}}
+                    <!-- {{playDisplay(index)}} currentTimeList[index-2] < currentTime && currentTime < currentTimeList[index-1]-->
                 </p>
         </div>
         <div class="bodys">
@@ -28,7 +28,6 @@ export default {
     props:['suspendBoolean'],
     data() {
         return {
-            currentTime:'',
             currentTimeList:[],
             currentContentList:[],
             orderNum:0,
@@ -39,6 +38,7 @@ export default {
             zsqRef:'',
             map:new Map(),
             width:0,
+            timeIndex:0
         }
     },
     methods: {
@@ -116,8 +116,7 @@ export default {
         timeList(time,content,index){
             this.currentTimeList.push(time)
             this.currentContentList.push(content)
-
-
+            console.log(2)
             const canvas = document.createElement("canvas");
             const context = canvas.getContext("2d");
             context.font = "12px Arial";
@@ -130,7 +129,19 @@ export default {
         },
         /* 实时获取播放时间 */
         timeUpdated({target}){
-            this.currentTime = target.currentTime
+            
+            let time = target.currentTime
+            while(this.currentTimeList[this.timeIndex] < time){
+                this.zsqRef.scrollTop = this.map.get(this.timeIndex)
+                this.timeIndex++
+                console.log(111)
+            }
+            while(this.currentTimeList[this.timeIndex-1] > time){
+                this.zsqRef.scrollTop = this.map.get(this.timeIndex-2)
+                this.timeIndex--
+                console.log(222)
+            }
+
             if(target.ended){
                 if(this.orderNum==0){
                     this.playSong(this.playList[this.index])
