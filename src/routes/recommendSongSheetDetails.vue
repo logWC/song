@@ -1,35 +1,24 @@
 <template>
-    <div v-if="idList.length">
+    <div>
         <h3>歌单详情(默认20首)</h3>
         <div class="head-div">
-            <img :src="songList.coverImgUrl" alt="加载出错" />
+            <img ref="img" alt="加载出错" />
             <div>
                 <h4>{{$route.query.title}}</h4>
                 <p>歌单创作者: {{$route.query.name}}</p>
             </div>
         </div>
-        <div class="body-div">
-            <ul @click.once="$idListMe(idList)">
-                <li @click="$play(item.id)" v-for="item in songList.tracks" :key="item.id">
-                    <div>
-                        <span>{{item.name}}</span>
-                        <span style="color:red"> {{item.ar | songName}} </span>
-                    </div>
-                </li>
-            </ul>
-        </div>
+        <SongLi :songObj='songObj' />
     </div>
 </template>
 <script>
-import {songName} from '@/mixins/index.js'
+import SongLi from '@/components/SongLi.vue'
 export default {
     name:"recommendSongSheetDetails",
-    mixins:[songName],
+    components:{SongLi},
     data() {
         return {
-            songList:"",
-            idList:[],
-            keyr:1
+            songObj:{}
         }
     },
     methods: {
@@ -38,8 +27,11 @@ export default {
             this.$api.songListDetails(this.$route.query.id)
             .then(
                 content => {
-                    this.songList = content.data.playlist
-                    this.idList = this.songList.tracks.map(val => val.id)
+                    this.songObj = {
+                        'tracks': content.data.playlist.tracks,
+                        'idList': content.data.playlist.tracks.map(val => val.id)
+                    }
+                    this.$refs.img.src = content.data.playlist.coverImgUrl
                 }
             )
             .catch(error => alert(`获取歌曲失败: ${error}`))
