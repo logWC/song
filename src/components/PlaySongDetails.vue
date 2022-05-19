@@ -1,24 +1,27 @@
 <template>
     <div class="whole">
         <input type="button" @click="con" value="无聊按钮" v-debounce />
-        <!-- <span @click="indexOut">&lt;</span> -->
-        <div class="zsq" ref="zsqRef">
-                <p :class="{red:timeIndex==index-1}"
-                    v-for="(val,index) in currentContentList" :key="index">
-                    {{val}}
-                    <!-- {{playDisplay(index)}} currentTimeList[index-2] < currentTime && currentTime < currentTimeList[index-1]-->
-                </p>
-        </div>
-        <div class="bodys">
-            <button @click="lastSong">上一首</button>
-            <button @click="$emit('suspend')" v-if="!suspendBoolean">暂停</button>
-            <button @click="$emit('play')" v-else>播放</button>
-            <button @click="nextSong">下一首</button>
-        </div>
-        <div>
-            <b @click="changeOrder(1)" v-if="orderNum==0">单曲循环</b>
-            <b @click="changeOrder(2)" v-if="orderNum==1">顺序播放</b>
-            <b @click="changeOrder(0)" v-if="orderNum==2">随机播放</b>
+        <div class="lyric">
+            <div class="zsq" ref="zsqRef">
+                <p></p>
+                <p></p>
+                    <p :class="{red:timeIndex==inde+1}" v-for="(val,inde) in currentContentList" :key="inde">
+                        {{val}}
+                    </p>
+                <p></p>
+                <p></p>
+            </div>
+            <div>
+                <button @click="lastSong">上一首</button>
+                <button @click="$emit('suspend')" v-if="!suspendBoolean">暂停</button>
+                <button @click="$emit('play')" v-else>播放</button>
+                <button @click="nextSong">下一首</button>
+            </div>
+            <div>
+                <b @click="changeOrder(1)" v-if="orderNum==0">单曲循环</b>
+                <b @click="changeOrder(2)" v-if="orderNum==1">顺序播放</b>
+                <b @click="changeOrder(0)" v-if="orderNum==2">随机播放</b>
+            </div>
         </div>
     </div>
 </template>
@@ -46,17 +49,6 @@ export default {
         con(){
             console.log(Math.random())
             this.$refs.zsqRef.scrollTop = 30
-        },
-        // 退出歌词
-        indexOut(){
-        },
-        // 设置动态歌词
-        playDisplay(index){
-            if(this.arrIndex!=index && this.currentTimeList[index] < this.currentTime && this.currentTime < this.currentTimeList[index+1]){
-                console.log(index,window.getComputedStyle(this.zsqRef).fontSize)
-                this.arrIndex = index
-                this.zsqRef.scrollTop = this.map.get(index)
-            }
         },
 
         /* 改变播放顺序 */
@@ -92,8 +84,6 @@ export default {
             if (!value) return
             let lyric = value.split("\n")
             let reg = /\[\d*:\d*(\.|:)\d*/g
-            this.currentContentList.push('')
-            this.currentContentList.push('')
             var index = 0
             lyric.forEach((val)=>{
                 // 转换时间为秒，并以键值对显示 时间：歌词
@@ -103,26 +93,25 @@ export default {
                     let min = parseFloat(timeReg[0].match(/\[\d*/g)[0].slice(1))
                     let sec = parseFloat(timeReg[0].match(/\d*\.\d/g)[0])
                     let time = min*60 + sec
-                    index++
                     this.timeList(time,content,index)
+                    index++
                 }
             })
             // 优化最后一句歌词动画
             this.currentTimeList.push(999999)
-            this.currentContentList.push('')
-            this.currentContentList.push('')
         },
         /* 获取时间与及对应歌词 */
         timeList(time,content,index){
             this.currentTimeList.push(time)
             this.currentContentList.push(content)
-            console.log(2)
+
+            // 判断歌词长度 >= 500
             const canvas = document.createElement("canvas");
             const context = canvas.getContext("2d");
             context.font = "12px Arial";
             var width = context.measureText(content).width
-            if(width>=300){
-                var i = Math.floor(width/300)
+            if(width>=400){
+                var i = Math.floor(width/400)
                 this.width+=i
             }
             this.map.set(index,(index*30)+this.width*30)
@@ -132,24 +121,16 @@ export default {
 
             let time = target.currentTime
             while(this.currentTimeList[this.timeIndex] < time){
+                console.log(this.map.get(0))
                 this.zsqRef.scrollTop = this.map.get(this.timeIndex)
                 this.timeIndex++
-                console.log(111)
-                console.log(this.map)
             }
             while(this.currentTimeList[this.timeIndex-1] > time){
                 this.zsqRef.scrollTop = this.map.get(this.timeIndex-2)
                 this.timeIndex--
-                console.log(222)
             }
 
-            if(target.ended){
-                if(this.orderNum==0){
-                    this.playSong(this.playList[this.index])
-                }else{
-                    this.nextSong()
-                }
-            }
+            if(target.ended){this.orderNum==0?this.playSong(this.playList[this.index]):this.nextSong()}
         },
 
         /* 获取歌曲id列表 */
@@ -208,9 +189,10 @@ export default {
 </script>
 <style scoped>
 .whole{
-    width: 100%;
+    max-width: 900px;
     height: calc(100vh);
     min-height: 300px;
+    margin: 0 auto;
 }
 div{
     width: 100%;
@@ -218,11 +200,12 @@ div{
 .zsq{
     font-family: Arial;
     font-size: 12px;
-    width: 300px;
+    width: 400px;
     height: 150px;
     overflow: auto;
     background-color: antiquewhite;
-}
+    margin: 0 auto;
+    }
 .zsq::-webkit-scrollbar{
     display: none;
 }
