@@ -8,7 +8,7 @@
                 <p>歌单创作者: {{$route.query.name}}</p>
             </div>
         </div>
-        <SongLi :songObj='songObj' />
+        <SongLi :songArr='songArr' />
     </div>
 </template>
 <script>
@@ -18,7 +18,7 @@ export default {
     components:{SongLi},
     data() {
         return {
-            songObj:{}
+            songArr:[]
         }
     },
     methods: {
@@ -26,12 +26,9 @@ export default {
             // 获取歌单的所有歌曲
             this.$api.songListDetails(this.$route.query.id)
             .then(
-                content => {
-                    this.songObj = {
-                        'tracks': content.data.playlist.tracks,
-                        'idList': content.data.playlist.tracks.map(val => val.id)
-                    }
-                    this.$refs.img.src = content.data.playlist.coverImgUrl
+                ({data}) => {
+                    this.songArr = data.playlist.tracks
+                    this.$refs.img.src = data.playlist.coverImgUrl
                 }
             )
             .catch(error => alert(`获取歌曲失败: ${error}`))

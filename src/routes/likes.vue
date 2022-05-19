@@ -1,24 +1,23 @@
 <template>
     <div>
-        <ul @click.once="$idListMe(idList)" v-if="likeList.length">
-            <li @click="$play(item.id)" v-for="item in likeList" :key="item.id">
-                {{item.name}}
-            </li>
-        </ul>
+        <h2>我喜欢的歌</h2>
+        <SongLi :songArr="songArr" />
     </div>
 </template>
 <script>
+import SongLi from '@/components/SongLi.vue'
 import { mapState } from 'vuex'
 export default {
     name:'likes',
+    components:{SongLi},
     data() {
         return {
-            idList:[]
+            songArr:[]
         }
     },
     methods: {
-        idJoin(){
-            this.idList = this.likeList.map(val=>val.id)
+        getSongIdList(){
+            this.songArr = this.likeList
         }
     },
     computed:{
@@ -27,9 +26,14 @@ export default {
         })
     },
     created() {
-        this.idJoin()
+        this.getSongIdList()
     },
 }
 </script>
 <style scoped>
+h2{
+    text-align: center;
+    padding: 30px 0;
+    background-color: rgb(0, 255, 76);
+}
 </style>

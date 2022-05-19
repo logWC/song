@@ -24,36 +24,22 @@
                 </div>
             </div>
         </div>
-        <!-- 歌曲列表 -->
-        <!-- <div class="bodys" v-if="searchList.length">
-            <p>单曲</p>
-            <ul @click.once="$idListMe(idList)">
-                <li @click="$play(item.id)" v-for="item in searchList" :key="item.id">
-                    <p> {{item.name}} </p>
-                    <span> {{item.artists | songName}} - {{item.album.name}} </span>
-                </li>
-            </ul>
-        </div> -->
-        <SongLi :songObj="songObj" />
+        <SongLi :songArr="songArr" />
     </div>
 </template>
 <script>
-import {songName} from '@/mixins/index.js'
 import SongLi from '@/components/SongLi.vue'
 export default {
     name:'Search',
-    mixins:[songName],
     components:{SongLi},
     data() {
         return {
             searchContent:"",
-            // searchList:[],
             proposalList:[],
             proposalBoole:true,
             historyList:[],
             i:null,
-            idList:[],
-            songObj:{}
+            songArr:[]
         }
     },
     methods: {
@@ -68,14 +54,7 @@ export default {
             this.throttle(content)
             this.historyListLRU(content)
             this.$api.search(content)
-            .then(({data}) => {
-                this.songObj = {
-                    'tracks': data.result.songs,
-                    'idList': data.result.songs.map(val => val.id)
-                }
-                // this.searchList = data.result.songs
-                // this.idList = this.searchList.map(val => val.id)
-                })
+            .then(({data}) => this.songArr = data.result.songs)
             .catch(error => console.log("出错啦",error))
         },
         throttle(content){

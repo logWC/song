@@ -39,6 +39,7 @@ export default {
             playList:null,
             arrIndex:-1,
             zsqRef:'',
+            measureText: null,
             map:new Map(),
             width:0,
             timeIndex:0
@@ -73,15 +74,17 @@ export default {
         },
         /* 发送获取歌词及时间的请求 */
         obtainLyric(id){
-            // 清空时间
-            this.currentTimeList = []
-            // 清空歌词
-            this.currentContentList = []
             this.$api.lyric(id)
             .then(content => this.filterLRC(content.data.lrc.lyric))
             .catch(error=> console.log(`获取歌词失败${error}`))
         },
         filterLRC(value){
+            // 清空时间
+            this.currentTimeList = []
+            // 清空歌词
+            this.currentContentList = []
+            // 清空map：每个时间段对应的scrollTop
+            this.map.clear()
             if (!value) return
             let lyric = value.split("\n")
             let reg = /\[\d*:\d*(\.|:)\d*/g
@@ -100,17 +103,18 @@ export default {
             })
             // 优化最后一句歌词动画
             this.currentTimeList.push(999999)
+            console.log(this.map)
         },
         /* 获取时间与及对应歌词 */
         timeList(time,content,index){
             this.currentTimeList.push(time)
             this.currentContentList.push(content)
 
-            // 判断歌词长度 >= 500
-            const canvas = document.createElement("canvas");
-            const context = canvas.getContext("2d");
-            context.font = "12px Arial";
-            var width = context.measureText(content).width
+            // 判断歌词长度 >= 400
+            // const context = this.canvas.getContext("2d");
+            // context.font = "12px Arial";
+            // var width = context.measureText(content).width
+            var width = this.measureText.measureText(content).width
             if(width>=400){
                 var i = Math.floor(width/400)
                 this.width+=i
@@ -119,14 +123,14 @@ export default {
         },
         /* 实时获取播放时间 */
         timeUpdated({target}){
-
             let time = target.currentTime
             while(this.currentTimeList[this.timeIndex] < time){
-                console.log(this.map.get(0))
+                console.log('时间1',this.map.get(0))
                 this.zsqRef.scrollTop = this.map.get(this.timeIndex)
                 this.timeIndex++
             }
             while(this.currentTimeList[this.timeIndex-1] > time){
+                console.log('时间2')
                 this.zsqRef.scrollTop = this.map.get(this.timeIndex-2)
                 this.timeIndex--
             }
@@ -169,7 +173,10 @@ export default {
             this.$bus.$emit('music',id)
         },
         elementMe(){
-            this.zsqRef = this.$refs.zsqRef
+            this.zsqRef = this.$refs.zsqRef;
+            let canvas = document.createElement("canvas");
+            this.measureText = canvas.getContext('2d');
+            this.measureText.font = "12px Arial"
         }
     },
     created(){
