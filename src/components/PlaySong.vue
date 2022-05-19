@@ -43,7 +43,7 @@ export default {
                     this.audioSrc =  url + '?time=' + Math.random();
                     this.$bus.$emit('obtainLyric',id)
                     // 兼容autoplay失效的浏览器
-                    // this.$nextTick(()=>{this.play()})
+                    this.$nextTick(()=>{this.play()})
                 }else{
                     // 当url为null时，播放下一首
                     this.$bus.$emit('nextSong')
