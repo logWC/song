@@ -54,6 +54,7 @@ export default {
         /* 改变播放顺序 */
         changeOrder(num){
             this.orderNum = num
+            if(!this.playList) return
             var id = this.playList[this.index]
             var arr = JSON.parse(JSON.stringify(this.idList))
             this.playList = num!=2?arr:this.shuffleMethod(arr)
@@ -207,6 +208,7 @@ div{
     margin: 0 auto;
     }
 .zsq::-webkit-scrollbar{
+    /* 隐藏滚动条 */
     display: none;
 }
 p{
