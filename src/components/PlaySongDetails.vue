@@ -13,7 +13,7 @@
             </div>
             <div>
                 <button @click="lastSong">上一首</button>
-                <button @click="$emit('suspend')" v-if="!suspendBoolean">暂停</button>
+                <button @click="$emit('suspend')" v-if="suspendBoolean">暂停</button>
                 <button @click="$emit('play')" v-else>播放</button>
                 <button @click="nextSong">下一首</button>
             </div>
@@ -111,9 +111,6 @@ export default {
             this.currentContentList.push(content)
 
             // 判断歌词长度 >= 400
-            // const context = this.canvas.getContext("2d");
-            // context.font = "12px Arial";
-            // var width = context.measureText(content).width
             var width = this.measureText.measureText(content).width
             if(width>=400){
                 var i = Math.floor(width/400)
@@ -176,7 +173,7 @@ export default {
             this.zsqRef = this.$refs.zsqRef;
             let canvas = document.createElement("canvas");
             this.measureText = canvas.getContext('2d');
-            this.measureText.font = "12px Arial"
+            this.measureText.font = "15px Arial"
         }
     },
     created(){
@@ -204,10 +201,11 @@ export default {
 }
 div{
     width: 100%;
+    overflow: hidden;
 }
 .zsq{
     font-family: Arial;
-    font-size: 12px;
+    font-size: 15px;
     width: 400px;
     height: 150px;
     overflow: auto;
@@ -224,6 +222,6 @@ p{
     line-height: 30px;
 }
 .red{
-    color: rgb(199, 170, 170);
+    color: rgb(224, 16, 16);
 }
 </style>
