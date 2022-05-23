@@ -122,17 +122,15 @@ export default {
         timeUpdated({target}){
             let time = target.currentTime
             while(this.currentTimeList[this.timeIndex] < time){
-                console.log('时间1',this.map.get(0))
                 this.zsqRef.scrollTop = this.map.get(this.timeIndex)
                 this.timeIndex++
             }
             while(this.currentTimeList[this.timeIndex-1] > time){
-                console.log('时间2')
                 this.zsqRef.scrollTop = this.map.get(this.timeIndex-2)
                 this.timeIndex--
             }
 
-            if(target.ended){this.orderNum==0?this.playSong(this.playList[this.index]):this.nextSong()}
+            if(target.ended&&this.playList){this.orderNum==0?this.playSong(this.playList[this.index]):this.nextSong()}
         },
 
         /* 获取歌曲id列表 */

@@ -13,7 +13,7 @@ export default {
     name:'Home',
     components: { recommendSongSheet, newMusic },
     activated() {
-        console.log('路由组件激活了')
+        console.log('路由组件激活了',new Date())
     },
     deactivated() {
         console.log('路由组件失活了')
