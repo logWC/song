@@ -2,7 +2,8 @@
     <div>
         <div class="thead" :class="{whole1:boole,whole2:!boole}" @mouseleave="wearOut(2000)" @mouseenter="penetrate">
             <img :src="picUrl" alt="加载出错啦" />
-            <audio id="audio" ref="audio" controls="controls" autoplay="autoplay" :src="audioSrc">
+            <!-- autoplay="autoplay" -->
+            <audio @error="test" ref="audio" controls="controls" :src="audioSrc">
                 对不起，你的浏览器不支持audio标签，请升级或更换浏览器进行播放
             </audio>
             <button @click="$bus.$emit('lastSong')">上一首</button>
@@ -21,23 +22,33 @@ export default {
     data() {
         return {
             audioSrc:null,
-            picUrl:require('@/assets/logo.png'),
+            // picUrl:require('@/assets/logo.png'),
+            picUrl:'https://p2.music.126.net/p0VRX-W5PDz0L4YrXY9aNQ==/109951163663975752.jpg',
             boole:false,
             setTime:null,
             suspendBoolean:false,
+            musicId:1323304744,
             audioEl:null,
         }
     },
     methods: {
+        // src失效
+        test(){
+            this.$api.song(this.musicId)
+            .then(({data})=>this.audioSrc=data.data[0].url + '?time=' + Math.random())
+            .then(val=>{this.audioEl.play();console.log(val)})
+        },
         /* 播放音乐 */
         music(id){
+            // 保存id
+            this.musicId = id
             // 获取歌曲图片
             this.$api.songDetail(id)
-            .then(content => this.picUrl = content.data.songs[0].al.picUrl)
+            .then(({data}) => this.picUrl = data.songs[0].al.picUrl)
             // 进行播放及获取歌词
             this.$api.song(id)
-            .then(val => {
-                let url = val.data.data[0].url
+            .then(({data}) => {
+                let url = data.data[0].url
                 if(url){
                     // 获取歌词
                     this.$bus.$emit('obtainLyric',id)
@@ -81,9 +92,12 @@ export default {
         wearOut(time){
             this.setTime = setTimeout(()=>this.boole=true,time)
         },
-        suspendBooleanMe(){
-            console.log(111)
-            this.suspendBoolean=!this.suspendBoolean
+        suspendBooleanMe(el){
+            if(el.type=='play'){
+                this.suspendBoolean = true
+            }else{
+                this.suspendBoolean = false
+            }
         },
         // 绑定元素
         elementMe(){
