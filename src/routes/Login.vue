@@ -34,7 +34,6 @@ export default {
             /* 登录 */
             this.$api.logon(this.phone,this.password)
             .then(({data}) => {
-                console.log(data)
                 this.$store.dispatch('userData',data.profile)
                 this.tourist()
             })

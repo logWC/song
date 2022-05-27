@@ -2,7 +2,7 @@ export default (Vue,options)=>{
   // 点击播放
   Vue.prototype.$play = function(id){
       /* 播放歌曲 */
-      console.log(options)
+      // console.log(options)
       this.$bus.$emit('currentSong',id)
   }
   // 传递id列表
