@@ -4,11 +4,11 @@
             <h3>网易云登录</h3>
             <div>
                 <input @keyup.enter="removeFocus" @focus="error=false" type="text" v-model="phone" placeholder="手机号" />
-                <input ref="password" @keyup.enter="submitTo" @focus="error=false" type="password" v-model="password" placeholder="密码" />
+                <input ref="password" @keyup.enter="logon" @focus="error=false" type="password" v-model="password" placeholder="密码" />
                 <span class="error" v-if="error">手机号或密码错误，请重新输入</span>
             </div>
             <button @click="logon">登录</button>
-            <sub @click="tourist">游客模式</sub>
+            <!-- <sub @click="tourist">游客模式</sub>  禁止了游客播放歌曲 -->
         </div>
         <p>网站仅供学习使用</p>
         <p>注：游客模式部分功能会受限</p>
@@ -20,12 +20,9 @@ export default {
     name:"Login",
     data() {
         return {
-            userData:null,
-            loginData:null,
             phone:null,
             password:null,
             signIn:false,
-            status:null,
             error:false
         }
     },
@@ -33,45 +30,28 @@ export default {
         removeFocus(){
             this.$refs.password.focus()
         },
-        submitTo(){
-            this.logon()
-        },
-        statusMethod(){
-            /* 验证登录状态，若为登录状态则跳到主页，否则显示登录页面 */
-            this.$api.loginStatus()
-            .then(content=>{
-                this.loginData = content.data
-                this.status = content.status
-            })
-            .catch(error=>{
-                this.signIn = true
-            })
-        },
         logon(){
             /* 登录 */
             this.$api.logon(this.phone,this.password)
-            .then(content => {
-                this.loginData = content.data
-                this.status = content.status
+            .then(({data}) => {
+                console.log(data)
+                this.$store.dispatch('userData',data.profile)
+                this.tourist()
             })
             .catch(error => this.error = true)
         },
+        /* 转换路由 */
         tourist(){
-            /* 转换路由 */
             this.$router.replace('/layout/home')
         }
     },
-    watch:{
-        status(data1){
-            /* 若登录成功则触发 */
-            if(data1 == 200){
-                this.$store.dispatch('userData',this.loginData.profile)
-                this.tourist()
-            }
-        }
-    },
     created() {
-        this.statusMethod()
+        this.$api.loginStatus()
+        .then(({data}) => {
+            this.$store.dispatch('userData',data.data.profile)
+            this.tourist()
+        })
+        .catch(error => {this.signIn = true;console.log("没登陆")})
     },
     destroyed() {
         console.log('登录组件销毁了')
