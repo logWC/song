@@ -32,7 +32,7 @@ export default {
         // 获取推荐歌单
         this.$api.recommend()
         .then(({data}) => {this.recommendList = data.recommend})
-        .catch(error => console.log(error))
+        .catch(error => console.log('请登录'))
     }
 }
 </script>
