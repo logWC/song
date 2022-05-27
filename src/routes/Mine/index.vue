@@ -23,6 +23,7 @@ export default {
     methods: {
         logout(){
             /* 退出登录、清除vuex的个人信息、转换路由 */
+            this.$bus.$emit('audioClear')
             this.$store.dispatch('clearDate',['profile','likeDataList'])
             this.$api.logout()
             .then(content=>this.$router.replace('/'))

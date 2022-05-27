@@ -105,7 +105,7 @@ export default {
             })
             // 优化最后一句歌词动画
             this.currentTimeList.push(999999)
-            console.log(this.map)
+            console.log(this.currentContentList)
         },
         /* 获取时间与及对应歌词 */
         timeList(time,content,index){
@@ -173,6 +173,12 @@ export default {
             let canvas = document.createElement("canvas");
             this.measureText = canvas.getContext('2d');
             this.measureText.font = "15px Arial"
+        },
+        /* 恢复歌词出厂 */
+        lyricClear(){
+            this.currentTimeList = []
+            this.currentContentList = []
+            this.map.clear()
         }
     },
     created(){
@@ -181,6 +187,7 @@ export default {
         this.$bus.$on('lastSong',this.lastSong)
         this.$bus.$on('nextSong',this.nextSong)
         this.$bus.$on('obtainLyric',this.obtainLyric)
+        this.$bus.$on('lyricClear',this.lyricClear)
         this.$parent.$refs.audio.addEventListener('timeupdate',this.timeUpdated)
     },
     mounted() {

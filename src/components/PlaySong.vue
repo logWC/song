@@ -52,19 +52,20 @@ export default {
             this.$api.song(id)
             .then(({data}) => {
                 let url = data.data[0].url
-                console.log(url)
-                // 获取url
-                this.audioSrc =  url;
-                // 获取歌曲图片
-                this.$api.songDetail(id)
-                .then(({data}) => this.picUrl = data.songs[0].al.picUrl)
                 if(url){
+                    // 获取url
+                    this.audioSrc =  url;
+                    // 获取歌曲图片
+                    this.$api.songDetail(id)
+                    .then(({data}) => this.picUrl = data.songs[0].al.picUrl)
                     // 获取歌词
                     this.$bus.$emit('obtainLyric',id)
                     // 兼容autoplay失效的浏览器（点击歌曲但无法自动播放）
                     this.$nextTick(()=>{this.play()})
                 }else{
-                    this.audioEl.load()
+                    this.audioClear()
+                    // this.$bus.$emit('lyricClear')
+                    // this.audioEl.load()
                     alert('歌曲未获得版权，请播放其他歌曲')
                 }
             })
@@ -99,6 +100,7 @@ export default {
         wearOut(time){
             this.setTime = setTimeout(()=>this.boole=true,time)
         },
+        /* 改变播放状态按钮 */
         suspendBooleanMe(el){
             if(el.type=='play'){
                 this.suspendBoolean = true
@@ -106,10 +108,18 @@ export default {
                 this.suspendBoolean = false
             }
         },
-        // 绑定元素
+        /* 绑定元素并监听播放状态 */
         elementMe(){
             this.audioEl = this.$refs.audio;
             ['play','pause'].forEach(val=>this.audioEl.addEventListener(val,this.suspendBooleanMe))
+        },
+        /* 恢复audio出厂 */
+        audioClear(){
+            this.$bus.$emit('lyricClear')
+            this.audioSrc = null
+            this.audioEl.load()
+            this.picUrl = this.$options.data().picUrl
+            // Object.assign(this.$data,this.$options.data())
         }
     },
     created(){
@@ -117,6 +127,7 @@ export default {
         this.wearOut(4000)
         // 设置全局总线事件
         this.$bus.$on('music',this.music)
+        this.$bus.$on('audioClear',this.audioClear)
     },
     mounted() {
         // 设置绑定元素
