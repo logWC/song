@@ -11,7 +11,7 @@ module.exports = {
   devServer:{
     proxy:{
       '/api':{
-        target:'http://iwenwiki.com:3000',
+        target:'http://xq.svger.cn',
         changeOrigin:true,
         pathRewrite:{
           "^/api":""
