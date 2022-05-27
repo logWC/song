@@ -83,6 +83,8 @@ export default {
             this.currentTimeList = []
             // 清空歌词
             this.currentContentList = []
+            // 清空width：控制scroll
+            this.width=0
             // 清空map：每个时间段对应的scrollTop
             this.map.clear()
             if (!value) return
@@ -164,7 +166,6 @@ export default {
         },
         // 获取歌曲url和歌词
         playSong(id){
-            this.width = 0
             this.$bus.$emit('music',id)
         },
         elementMe(){
