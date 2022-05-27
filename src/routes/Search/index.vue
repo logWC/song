@@ -3,7 +3,7 @@
         <div>
             <div class="search">
                 <!-- 搜索框 -->
-                <input ref="inpu" type="text" @keyup="throttle(searchContent)" @keyup.enter="clickSearch(searchContent)" v-model="searchContent" />
+                <input ref="inpu" type="text" @keyup="throttle(searchContent)" @keyup.enter="clickSearch(searchContent)" v-model.trim="searchContent" />
                 <button @click="clickSearch(searchContent)">搜索</button>
                 <ul class="proposal">
                     <!-- 搜索建议 -->
@@ -46,7 +46,6 @@ export default {
         clickSearch(content){
             this.searchContent = content
             /* 获取搜索结果*/
-            content = content.trim()
             if(!content)return
             this.proposalList = []
             // 停止获取建议、获取歌曲列表
