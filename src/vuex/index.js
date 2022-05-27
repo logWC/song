@@ -25,8 +25,7 @@ const actions = {
         commit('likeDataList',likeDataList)
     },
     clearDate({commit},arr){
-        /* 清空state[...arr] */
-        commit('clearDate',arr)
+        arr.forEach(key=>commit('clearDate',key))
     }
 }
 const mutations = {
@@ -38,8 +37,8 @@ const mutations = {
         /* 数组对象：喜欢歌曲name、picUrl赋值 */
         state.likeDataList = arrObj
     },
-    clearDate(state,arr){
-        arr.forEach(val => state[val] = null)
+    clearDate(state,key){
+        state[key] = null
     }
 }
 window.addEventListener('beforeunload',()=>{
