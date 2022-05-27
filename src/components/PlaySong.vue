@@ -64,8 +64,6 @@ export default {
                     this.$nextTick(()=>{this.play()})
                 }else{
                     this.audioClear()
-                    // this.$bus.$emit('lyricClear')
-                    // this.audioEl.load()
                     alert('歌曲未获得版权，请播放其他歌曲')
                 }
             })
@@ -119,7 +117,6 @@ export default {
             this.audioSrc = null
             this.audioEl.load()
             this.picUrl = this.$options.data().picUrl
-            // Object.assign(this.$data,this.$options.data())
         }
     },
     created(){
