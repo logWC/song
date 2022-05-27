@@ -3,7 +3,7 @@ function time(){
     return new Date().getTime()
 }
 export default {
-    // 登录
+    // 登录http://iwenwiki.com:3000
     logon(phone,password){
         return axios.post(`/api/login/cellphone`,{
             phone,
@@ -69,7 +69,7 @@ export default {
     },
     // 歌曲详情
     songDetail(id){
-        return axios.get(`/api/song/detail?ids=${id}&time=${time()}`)
+        return axios.get(`/api/song/detail?ids=${id}`)
     },
     // 歌词
     lyric(id){
@@ -77,6 +77,12 @@ export default {
             params:{
                 id
             }
+        })
+    },
+    // 验证歌曲url能否播放
+    checkMusic(id){
+        return axios.get('/api/check/music',{
+            params:{id}
         })
     },
     // 搜索

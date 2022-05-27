@@ -22,8 +22,8 @@ export default {
     data() {
         return {
             audioSrc:null,
-            // picUrl:require('@/assets/logo.png'),
-            picUrl:'https://p2.music.126.net/p0VRX-W5PDz0L4YrXY9aNQ==/109951163663975752.jpg',
+            picUrl:require('@/assets/logo.png'),
+            // picUrl:'https://p2.music.126.net/p0VRX-W5PDz0L4YrXY9aNQ==/109951163663975752.jpg',
             boole:false,
             setTime:null,
             suspendBoolean:false,
@@ -33,32 +33,39 @@ export default {
     },
     methods: {
         // src失效
-        test(){
-            this.$api.song(this.musicId)
-            .then(({data})=>this.audioSrc=data.data[0].url + '?time=' + Math.random())
-            .then(val=>{this.audioEl.play();console.log(val)})
+        async test(){
+            let {data} = await this.$api.checkMusic(this.musicId)
+            if(data.success){
+                this.$api.song(this.musicId)
+                .then(({data})=>this.audioSrc=data.data[0].url)
+                .then(val=>this.audioEl.play())
+            }else{
+                this.$bus.$emit('nextSong')
+            }
+
         },
         /* 播放音乐 */
         music(id){
             // 保存id
             this.musicId = id
-            // 获取歌曲图片
-            this.$api.songDetail(id)
-            .then(({data}) => this.picUrl = data.songs[0].al.picUrl)
             // 进行播放及获取歌词
             this.$api.song(id)
             .then(({data}) => {
                 let url = data.data[0].url
+                console.log(url)
+                // 获取url
+                this.audioSrc =  url;
+                // 获取歌曲图片
+                this.$api.songDetail(id)
+                .then(({data}) => this.picUrl = data.songs[0].al.picUrl)
                 if(url){
                     // 获取歌词
                     this.$bus.$emit('obtainLyric',id)
-                    // 获取url
-                    this.audioSrc =  url + '?time=' + Math.random();
                     // 兼容autoplay失效的浏览器（点击歌曲但无法自动播放）
                     this.$nextTick(()=>{this.play()})
                 }else{
-                    // 当url为null时，播放下一首
-                    this.$bus.$emit('nextSong')
+                    this.audioEl.load()
+                    alert('歌曲未获得版权，请播放其他歌曲')
                 }
             })
             .catch(error => this.$bus.$emit('nextSong'))
