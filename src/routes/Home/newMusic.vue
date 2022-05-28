@@ -12,6 +12,7 @@
                 </li>
             </ul>
         </div>
+        <div v-else> {{isText}} </div>
     </div>
 </template>
 <script>
@@ -23,19 +24,19 @@ export default {
         return {
             recommendNewMusicList:[],
             idList:[],
+            isText:'正在加载',
+            errorText:'出错了，无语死了'
         }
     },
     methods: {
         obtainRecommendNewMusicList(){
             /* 获取歌曲列表、歌曲id列表 */
             this.$api.recommendNewMusic()
-            .then(
-                ({data}) => {
-                    this.recommendNewMusicList = data.result
-                    this.idList = this.recommendNewMusicList.map(val => val.id)
-            }
-            )
-            .catch(error => console.log(error))
+            .then(({data}) => {
+                this.recommendNewMusicList = data.result
+                this.idList = this.recommendNewMusicList.map(val => val.id)
+            })
+            .catch(error => this.isText = this.errorText)
         }
     },
     created() {

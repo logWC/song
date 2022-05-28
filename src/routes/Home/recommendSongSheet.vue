@@ -2,7 +2,7 @@
     <div>
         <div>
             <div v-if="recommendList.length">
-                <h3>定制推荐</h3>
+                <h2>定制推荐</h2>
             </div>
             <div class="tbody">
                 <router-link tag="div" v-for="item in recommendList" :to="{
@@ -37,29 +37,38 @@ export default {
 }
 </script>
 <style scoped>
-h3{
-    margin: 15px;
+h2{
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 20px 0 10px;
+    text-align: center;
+    letter-spacing: 20px;
 }
 .tbody{
+    box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-evenly;
-    text-align: justify;
+    justify-content: space-between;
+    align-content: space-around;
+    padding: 0 5%;
 }
 .tbody > div{
-    margin: 3px;
+    flex-basis: 30%;
+    text-align: center;
+    margin: 20px 0;
 }
-.tbody img{
-    display: inline-block;
-    width: 100px;
-    height: 100px;
-    border: 1px solid black;
+.tbody > div > img{
+    width: 100%;
     vertical-align: buttom;
+    border-radius: 10px;
 }
-.tbody span{
-    width: 100px;
+.tbody > div > span{
+    text-align: left;
+    font-weight: bold;
+    width: 100%;
     line-height: 1.5em;
     max-height: 3em;
+    margin-top: 10px;
     overflow: hidden;
     display: -webkit-box;
     white-space: normal;

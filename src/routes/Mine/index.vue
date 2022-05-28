@@ -1,11 +1,11 @@
 <template>
     <div>
         <div class="thead" v-if="profile">
-            <img v-lazy="profile.avatarUrl" alt="正在加载">
+            <img :src="profile.avatarUrl" alt="正在加载">
             <p> {{profile.nickname}} </p>
         </div>
         <div class="likeList" @click="likeListm" v-if="likeDataList">
-            <img v-lazy="likeDataList[0].al.picUrl">
+            <img :src="likeDataList[0].al.picUrl">
             <div>
                 <p>我喜欢的音乐</p>
                 <span> {{likeDataList.length}}首 </span>
@@ -40,7 +40,13 @@ export default {
             // 喜欢的音乐
             likeDataList:state => state.likeDataList
         })
-    }
+    },
+    activated() {
+        console.log('路由组件激活了',new Date())
+    },
+    deactivated() {
+        console.log('路由组件失活了')
+    },
 }
 </script>
 <style scoped>

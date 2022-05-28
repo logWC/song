@@ -1,6 +1,5 @@
 <template>
     <div class="whole">
-        <input type="button" @click="con" value="无聊按钮" v-debounce />
         <div class="lyric">
             <div class="zsq" ref="zsqRef">
                 <p></p>
@@ -200,7 +199,7 @@ export default {
 </script>
 <style scoped>
 .whole{
-    max-width: 900px;
+    max-width: 800px;
     height: calc(100vh);
     min-height: 300px;
     margin: 0 auto;
@@ -209,14 +208,18 @@ div{
     width: 100%;
     overflow: hidden;
 }
+.lyric{
+    width: 400px;
+    margin: 0 auto;
+}
 .zsq{
     font-family: Arial;
     font-size: 15px;
-    width: 400px;
+    /* width: 400px; */
     height: 150px;
     overflow: auto;
     background-color: antiquewhite;
-    margin: 0 auto;
+    /* margin: 0 auto; */
     }
 .zsq::-webkit-scrollbar{
     /* 隐藏滚动条 */

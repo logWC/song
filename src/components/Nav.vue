@@ -14,19 +14,20 @@ export default {
 <style scoped>
 .root{
     display: flex;
-    justify-content: space-between;
-    border-radius: 10px;
-    overflow: hidden;
 }
 a{
     flex-grow: 1;
+    color: rgb(78, 106, 131);;
     text-align: center;
     line-height: 30px;
-    color: black;
     background-color: rgb(78, 106, 131);
     transition: all 0.1s;
 }
+a:active{
+    color: black;
+}
 .active{
-    background-color: rgb(152, 169, 184);
+    background-color: rgb(222, 232, 240);
+    color: black;
 }
 </style>

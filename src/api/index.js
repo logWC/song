@@ -13,19 +13,19 @@ export default {
     },
     // 登录状态
     loginStatus(){
-        return axios.get(`/api/login/status?time=${time()}`)
+        return axios.get(`/api/login/status`)
     },
     // 刷新登录状态
     loginRefresh(){
-        return axios.get(`/api/login/refresh?time=${time()}`)
+        return axios.get(`/api/login/refresh`)
     },
     // 退出登录
     logout(){
-        return axios.get(`/api/logout?time=${time()}`)
+        return axios.get(`/api/logout`)
     },
     // 喜欢列表
     likeList(id){
-        return axios.get(`/api/likelist?uid=${id}&time=${time()}`)
+        return axios.get(`/api/likelist?uid=${id}`)
     },
     // 喜欢
     like(id,boole=true){
@@ -33,7 +33,7 @@ export default {
     },
     // 推荐歌单
     recommend(){
-        return axios.get(`/api/recommend/resource?time=${time()}`)
+        return axios.get(`/api/recommend/resource`)
     },
     // 歌单详情
     songListDetails(id){
@@ -49,7 +49,7 @@ export default {
     },
     // 推荐音乐（首）
     recommendNewMusic(){
-        return axios.get(`/api/personalized/newsong?time=${time()}`)
+        return axios.get(`/api/personalized/newsong`)
     },
     // 专辑
     album(id){
@@ -90,8 +90,7 @@ export default {
         return axios.get('/api/search',{
             params:{
                 keywords,
-                type,
-                time:time()
+                type
             }
         })
     },
@@ -99,8 +98,7 @@ export default {
     searchSuggest(keywords){
         return axios.get('/api/search/suggest',{
             params:{
-                keywords,
-                time:time()
+                keywords
             }
         })
     },

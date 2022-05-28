@@ -11,7 +11,7 @@
             <!-- <sub @click="tourist">游客模式</sub>  禁止了游客播放歌曲 -->
         </div>
         <p>网站仅供学习使用</p>
-        <p>注：游客模式部分功能会受限</p>
+        <!-- <p>注：游客模式部分功能会受限</p> -->
         <router-view></router-view>
     </div>
 </template>
@@ -45,12 +45,14 @@ export default {
         }
     },
     created() {
-        this.$api.loginStatus()
-        .then(({data}) => {
-            this.$store.dispatch('userData',data.data.profile)
-            this.tourist()
-        })
-        .catch(error => {this.signIn = true;console.log("没登陆")})
+        // this.$api.loginStatus()
+        // .then(({data}) => {
+        //     this.$store.dispatch('userData',data.data.profile)
+        //     this.tourist()
+        // })
+        // .catch(error => {this.signIn = true;console.log("没登陆")})
+        console.log(1)
+        if(!this.$store.state.profile){this.signIn=true}
     },
     destroyed() {
         console.log('登录组件销毁了')

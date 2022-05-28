@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="thead" :class="{whole1:boole,whole2:!boole}" @mouseleave="wearOut(2000)" @mouseenter="penetrate">
-            <img :src="picUrl" alt="加载出错啦" />
+            <img @error="picUrl=$options.data().picUrl" :src="picUrl" alt="加载出错啦" />
             <!-- autoplay="autoplay" -->
             <audio @error="test" ref="audio" controls="controls" :src="audioSrc">
                 对不起，你的浏览器不支持audio标签，请升级或更换浏览器进行播放
@@ -23,22 +23,29 @@ export default {
         return {
             audioSrc:null,
             picUrl:require('@/assets/logo.png'),
-            // picUrl:'https://p2.music.126.net/p0VRX-W5PDz0L4YrXY9aNQ==/109951163663975752.jpg',
             boole:false,
             setTime:null,
             suspendBoolean:false,
-            musicId:1323304744,
+            musicId:null,
+            musicIdr:null,
             audioEl:null,
+            int:null
         }
     },
     methods: {
         // src失效
         async test(){
             let {data} = await this.$api.checkMusic(this.musicId)
+            console.log(data)
             if(data.success){
+                if(this.musicId==this.musicIdr){
+                    this.audioSrc=null
+                    return
+                }
+                this.musicIdr=this.musicId
                 this.$api.song(this.musicId)
                 .then(({data})=>this.audioSrc=data.data[0].url)
-                .then(val=>this.audioEl.play())
+                this.$nextTick(()=>this.audioSrc.play())
             }else{
                 this.$bus.$emit('nextSong')
             }
@@ -61,7 +68,14 @@ export default {
                     // 获取歌词
                     this.$bus.$emit('obtainLyric',id)
                     // 兼容autoplay失效的浏览器（点击歌曲但无法自动播放）
-                    this.$nextTick(()=>{this.play()})
+                    // this.$nextTick(()=>{this.play()})
+                    this.int = setInterval(()=>{
+                        if(this.audioEl.readyState==4){
+                            clearInterval(this.int);
+                            this.play()
+                            console.log('开始播放')
+                        }
+                    },1000)
                 }else{
                     this.audioClear()
                     alert('歌曲未获得版权，请播放其他歌曲')

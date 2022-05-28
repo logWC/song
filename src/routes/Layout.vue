@@ -1,7 +1,7 @@
 <template>
-    <div class="loyoutClass">
+    <div style="margin-top:10px">
         <Nav />
-        <keep-alive include="Home">
+        <keep-alive include="Home,Mine">
             <router-view></router-view>
         </keep-alive>
     </div>
@@ -16,10 +16,5 @@ export default {
 }
 </script>
 <style scoped>
-.loyoutClass{
-    max-width: 900px;
-    min-height: 900px;
-    margin: 0 auto;
-    background-color: rgb(222, 232, 240);
-}
+
 </style>
