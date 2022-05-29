@@ -57,6 +57,9 @@ h2{
     text-align: center;
     margin: 20px 0;
 }
+.tbody > div:last-of-type{
+    margin-right: 35%;
+}
 .tbody > div > img{
     width: 100%;
     vertical-align: buttom;
