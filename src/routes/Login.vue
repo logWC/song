@@ -45,14 +45,7 @@ export default {
         }
     },
     created() {
-        // this.$api.loginStatus()
-        // .then(({data}) => {
-        //     this.$store.dispatch('userData',data.data.profile)
-        //     this.tourist()
-        // })
-        // .catch(error => {this.signIn = true;console.log("没登陆")})
-        console.log(1)
-        if(!this.$store.state.profile){this.signIn=true}
+        if(!this.$store.state.profile){this.signIn=true}else{this.tourist()}
     },
     destroyed() {
         console.log('登录组件销毁了')
@@ -63,6 +56,7 @@ export default {
 .signIn{
     display: flow-root;
     max-width: 800px;
+    max-height: 700px;
     margin: 10% auto;
     border-top-right-radius: 20%;
     background-image: linear-gradient(to right bottom,rgb(247, 247, 90),#5d85a8);
