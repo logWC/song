@@ -16,7 +16,7 @@ export default {
   components: { PlaySong, Tail },
   name: 'App',
   methods: {
-    async loginStatus(){
+    loginStatus(){
       this.$api.loginStatus()
       .then(({data})=>this.$store.dispatch('userData', data.data.profile))
       .catch(error=>console.log(error))

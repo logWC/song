@@ -2,7 +2,7 @@
     <div v-if="imageSrc">
         <h3>歌单详情(默认20首)</h3>
         <div class="head-div">
-            <img ref="img" :src="imageSrc" alt="加载出错" />
+            <img :src="imageSrc" alt="加载出错" />
             <div>
                 <h4>{{$route.query.title}}</h4>
                 <p>歌单创作者: {{$route.query.name}}</p>
@@ -30,7 +30,6 @@ export default {
                 ({data}) => {
                     this.songArr = data.playlist.tracks
                     this.imageSrc = data.playlist.coverImgUrl
-                    // this.$refs.img.src = data.playlist.coverImgUrl
                 }
             )
             .catch(error => alert(`获取歌曲失败: ${error}`))
