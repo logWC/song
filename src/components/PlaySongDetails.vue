@@ -45,12 +45,6 @@ export default {
         }
     },
     methods: {
-        // 无聊按钮
-        con(){
-            console.log(Math.random())
-            this.$refs.zsqRef.scrollTop = 30
-        },
-
         /* 改变播放顺序 */
         changeOrder(num){
             this.orderNum = num
