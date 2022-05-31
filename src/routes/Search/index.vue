@@ -113,12 +113,8 @@ export default {
             }
         }
     },
-    watch:{
-
-    },
     created() {
         this.getHistoryList()
-        // setInterval(()=>console.log(this.blur),500)
     }
 }
 </script>
