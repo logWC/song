@@ -51,6 +51,12 @@ export default new VueRouter({
             path:'/likes',
             name:'likes',
             component:()=>import('./likes.vue')
+        },
+        {
+            // 歌词
+            path:'/lyrics',
+            name:'lyrics',
+            component:()=>import('./lyric.vue')
         }
     ]
 })
