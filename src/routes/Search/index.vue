@@ -3,7 +3,7 @@
         <div>
             <div class="search">
                 <!-- 搜索框 -->
-                <input ref="inpu" type="text" @keyup="throttle(searchContent)" @keyup.enter="clickSearch(searchContent)" v-model.trim="searchContent" />
+                <input ref="inpu" type="text" @blur="proposalList=[]" @keyup="throttle(searchContent)" @keyup.enter="clickSearch(searchContent)" v-model.trim="searchContent" />
                 <button @click="clickSearch(searchContent)">搜索</button>
                 <ul class="proposal">
                     <!-- 搜索建议 -->
@@ -24,7 +24,8 @@
                 </div>
             </div>
         </div>
-        <SongLi :songArr="songArr" />
+        <SongLi v-if="getSearchSuccess" :songArr="songArr" />
+        <h2 v-else>对不起，没搜索到你需要的内容。</h2>
     </div>
 </template>
 <script>
@@ -39,51 +40,51 @@ export default {
             proposalBoole:true,
             historyList:[],
             i:null,
-            songArr:[]
+            songArr:[],
+            getSearchSuccess:true
         }
     },
     methods: {
+        /* 获取搜索结果*/
         clickSearch(content){
-            this.searchContent = content
-            /* 获取搜索结果*/
+            // 点击历史记录触发的搜索事件，搜索框需要添加text
+            this.searchContent = content 
+
             if(!content)return
+            this.getSearchSuccess = true
+            // 重置获取数组为空数组、停止获取建议、获取歌曲列表
             this.proposalList = []
-            // 停止获取建议、获取歌曲列表
-            this.proposalBoole = false
-            this.throttle(content)
+            // this.proposalBoole = false
+            clearInterval(this.i)
+            // 进行历史存储
             this.historyListLRU(content)
+            // 发送获取请求
             this.$api.search(content)
             .then(({data}) => this.songArr = data.result.songs)
-            .catch(error => console.log("出错啦",error))
+            .catch(error => this.getSearchSuccess=false)
         },
+        /* 使用防抖获取搜索建议 */
         throttle(content){
-        // 对搜索建议进行防抖
+            this.getSearchSuccess = true
             if(this.i)clearTimeout(this.i)
             this.i = setTimeout(
                 ()=>{
-                    this.clickSearchSuggest(content)
-                },500)
+                    console.log('我在setTimeout里面')
+                    // 获取搜索建议
+                    if(!content){this.proposalList = [];return}
+                    this.$api.searchSuggest(content)
+                    .then(({data}) => {
+                        this.proposalList = data.result.songs
+                        // if(this.proposalBoole){
+                        // }else{
+                        //     this.proposalBoole = true
+                        // }
+                    })
+                    .catch(error=>this.proposalList=[])
+                },5000)
         },
-        clickSearchSuggest(suggest){
-            // 获取搜索建议
-            suggest = suggest.trim()
-            if(!suggest){
-                this.proposalList = []
-                return
-            }
-            this.$api.searchSuggest(suggest)
-            .then(({data}) => {
-                if(this.proposalBoole){
-                    this.proposalList = data.result.songs
-                }else{
-                    this.proposalBoole = true
-                    // this.proposalList = data.result.songs
-                }
-            })
-            .catch(error=>console.log("出错了",error))
-        },
+        /* 使用LRU算法对搜索历史进行存储 */
         historyListLRU(content){
-            /* 使用LRU算法对搜索历史进行存储 */
             this.historyList.forEach(
                 (val,ind,arr)=>{
                     if(val == content)arr.splice(ind,1)[0]
@@ -93,13 +94,16 @@ export default {
             if(this.historyList.length == 11)this.historyList.pop()
             this.$setCookie("songHistoryList",this.historyList,7)
         },
+        /* 获取历史记录 */
         getHistoryList(){
-            /* 获取历史记录 */
             var data = this.$getCookie('songHistoryList')
             if(data){
                 this.historyList = JSON.parse(data)
             }
         }
+    },
+    watch:{
+
     },
     created() {
         this.getHistoryList()
