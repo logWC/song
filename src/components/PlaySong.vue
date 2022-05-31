@@ -1,15 +1,19 @@
 <template>
     <div>
-        <div class="thead" :class="{whole1:boole,whole2:!boole}" @mouseleave="wearOut(2000)" @mouseenter="penetrate">
-            <img @error="picUrl=$options.data().picUrl" :src="picUrl" alt="加载出错啦" />
-            <!-- autoplay="autoplay" -->
-            <audio @error="test" ref="audio" controls="controls" :src="audioSrc">
-                对不起，你的浏览器不支持audio标签，请升级或更换浏览器进行播放
-            </audio>
-            <button @click="$bus.$emit('lastSong')">上一首</button>
-            <button v-if="suspendBoolean" @click="suspend">暂停</button>
-            <button v-else @click="play">播放</button>
-            <button @click="$bus.$emit('nextSong')">下一首</button>
+        <!-- transparent -->
+        <div class="bodyr" :class="{whole1:boole,whole2:!boole}" @mouseleave="wearOut(2000)" @mouseenter="penetrate">
+            <div style="background-color:transparent;height:20px"> </div>
+            <div class="thead">
+                <img @click="lyricClick" @error="picUrl=$options.data().picUrl" :src="picUrl" alt="加载出错啦" />
+                <!-- autoplay="autoplay" -->
+                <audio @error="test" ref="audio" controls="controls" :src="audioSrc">
+                    对不起，你的浏览器不支持audio标签，请升级或更换浏览器进行播放
+                </audio>
+                <button @click="$bus.$emit('lastSong')">上一首</button>
+                <button v-if="suspendBoolean" @click="suspend">暂停</button>
+                <button v-else @click="play">播放</button>
+                <button @click="$bus.$emit('nextSong')">下一首</button>
+            </div>
         </div>
         <PlaySongDetails @suspend="suspend" @play="play" :suspendBoolean="suspendBoolean" v-show="true" />
     </div>
@@ -34,9 +38,8 @@ export default {
     },
     methods: {
         // src失效
-        async test(){
-            let {data} = await this.$api.checkMusic(this.musicId)
-            console.log(data)
+        test(){
+            let {data} = this.$api.checkMusic(this.musicId)
             if(data.success){
                 if(this.musicId==this.musicIdr){
                     this.audioSrc=null
@@ -45,7 +48,13 @@ export default {
                 this.musicIdr=this.musicId
                 this.$api.song(this.musicId)
                 .then(({data})=>this.audioSrc=data.data[0].url)
-                this.$nextTick(()=>this.audioSrc.play())
+                this.int = setInterval(()=>{
+                        if(this.audioEl.readyState==4){
+                            clearInterval(this.int);
+                            this.play()
+                            console.log('开始播放')
+                        }
+                    },1000)
             }else{
                 this.$bus.$emit('nextSong')
             }
@@ -91,18 +100,15 @@ export default {
         play(){
             this.audioEl.paused && this.audioSrc && this.audioEl.play()
         },
-        // playsongdetailsBoole:false,
-        // clickSongImg(){
-        //     /* 点击进入歌词页 */
-        //     this.playsongdetailsBoole = !this.playsongdetailsBoole
-        //     history.pushState(null,null,document.URL)
-        //     addEventListener('popstate',this.open)
-        // },
-        // open(){
-        //     console.log(1)
-        //     this.playsongdetailsBoole = !this.playsongdetailsBoole
-        //     removeEventListener('popstate',this.open)
-        // },
+        /* 跳转至歌词 */
+        lyricClick(){
+            this.$router.history.current.path!='/lyrics'
+            ?this.$router.push('/lyrics')
+            :console.log('现在就在歌词页')
+        },
+        sendSongData(){
+            this.$bus.$emit('getSongData',this.audioEl)
+        },
         /* 鼠标穿入元素 */
         penetrate(){
             this.boole=false
@@ -138,7 +144,10 @@ export default {
         this.wearOut(4000)
         // 设置全局总线事件
         this.$bus.$on('music',this.music)
+        // 设置重置audio事件
         this.$bus.$on('audioClear',this.audioClear)
+        // 设置发送歌曲数据方法
+        this.$bus.$on('sendSongData',this.sendSongData)
     },
     mounted() {
         // 设置绑定元素
@@ -150,33 +159,33 @@ export default {
 }
 </script>
 <style scoped>
-.thead{
-    display: flex;
+.bodyr{
     position: fixed;
     width: 100%;
-    height: 50px;
     transition: all 0.3s;
+}
+.thead{
+    display: flex;
+    height: 50px;
+    box-shadow: 0px -1px 5px #333;
+    background-color: #333;
 }
 .thead audio{
     flex-grow: 1;
     height: inherit;
+    background-color: inherit;
+}
+.thead button{
+    background-color: inherit;
+    border: none;
 }
 .thead img{
     width: 50px;
 }
-.none{
-    display: none;
-}
-.block{
-    display: block;
-}
 .whole1{
-    top:calc(100vh - 10px);
-    border-top: 10px solid rgba(61, 45, 45, 0.13);
+    top:calc(100vh - 20px);
 }
 .whole2{
-    top:calc(100vh - 50px);
-    border-top: none;
-    background-color: rgb(180, 167, 149);
+    top:calc(100vh - 70px);
 }
 </style>
