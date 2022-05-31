@@ -1,13 +1,13 @@
 <template>
     <div>
         <div v-if="recommendNewMusicList.length">
-            <h3>新音乐</h3>
+            <h2>新音乐</h2>
             <ul class="recommendNewMusic" @click.once="$idListMe(idList)">
                 <li @click="$play(item.id)" v-for="item in recommendNewMusicList" :key="item.id">
                     <img v-lazy="item.picUrl" :alt="item.name">
                     <div>
                         <p>{{item.name}}</p>
-                        <span> {{item.song.artists | songName}} </span>
+                        <span> {{item.song.artists | songName}} - {{item.song.album.name}} </span>
                     </div>
                 </li>
             </ul>
@@ -45,27 +45,46 @@ export default {
 }
 </script>
 <style scoped>
-h3{margin: 20px 15px;}
+h2{
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 20px 0 10px;
+    text-align: center;
+    letter-spacing: 20px;
+}
 .recommendNewMusic{
-    margin: 20px;
+    box-sizing: border-box;
+    padding: 5px 5%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 .recommendNewMusic li{
     display: flex;
-    padding: 1px;
+    flex-basis: 32%;
+    overflow: hidden;
+    margin: 5px 0;
 }
 .recommendNewMusic li img{
     width: 60px;
     height: 60px;
 }
-.recommendNewMusic li div{
+.recommendNewMusic > li > div{
     box-sizing: border-box;
-    height: 60px;
     flex-grow: 1;
     line-height: 20px;
-    padding: 10px;
+    padding: 10px 0px 10px 10px;
+    overflow: hidden;
 }
-.recommendNewMusic li span{
+.recommendNewMusic > li > div > p{
+    overflow: hidden;
+    white-space: nowrap;
+}
+.recommendNewMusic > li > div > span{
     display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     font-size: 9px;
 }
 </style>

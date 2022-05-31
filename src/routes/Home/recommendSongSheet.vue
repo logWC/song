@@ -1,10 +1,10 @@
 <template>
     <div>
-        <div>
-            <div v-if="recommendList.length">
+        <div v-if="recommendList.length">
+            <div>
                 <h2>定制推荐</h2>
             </div>
-            <div class="tbody">
+            <div class="tbody" :class="{'last-div':(recommendList.length)%3!=0}">
                 <router-link tag="div" v-for="item in recommendList" :to="{
                     path:'/tjgdxq',
                     query:{
@@ -49,16 +49,12 @@ h2{
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    align-content: space-around;
     padding: 0 5%;
 }
 .tbody > div{
     flex-basis: 30%;
     text-align: center;
-    margin: 20px 0;
-}
-.tbody > div:last-of-type{
-    margin-right: 35%;
+    margin: 10px 0;
 }
 .tbody > div > img{
     width: 100%;
@@ -77,5 +73,8 @@ h2{
     white-space: normal;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+}
+.last-div > div:last-of-type{
+    margin-right: 35%;
 }
 </style>
