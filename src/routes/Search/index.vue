@@ -18,7 +18,7 @@
                 <span>历史</span>
                 <div>
                     <div>
-                        <span @click="clickSearch(name,1)" v-for="name in historyList" :key="name">
+                        <span @click="clickSearch(name)" v-for="name in historyList" :key="name">
                             {{name}}
                         </span>
                     </div>
@@ -47,41 +47,39 @@ export default {
     },
     methods: {
         blur(){
+            console.log('blur')
             this.proposalBoole=false
             this.$refs.inpu.removeEventListener('blur',this.blur)
         },
         focus(){
-            this.proposalBoole=true
+            this.proposalList.length==0 && this.throttle(this.searchContent,{key:'no'},0)
             this.$refs.inpu.addEventListener('blur',this.blur)
         },
         mouseEnter(){
+            console.log('enter')
             this.$refs.inpu.removeEventListener('blur',this.blur)
         },
         mouseLeave(){
+            console.log('leave')
             this.$refs.inpu.addEventListener('blur',this.blur)
         },
         /* 获取搜索结果*/
-        clickSearch(content,type=0){
-            console.log(111)
+        clickSearch(content){
             // 清空搜索结果
             this.songArr = []
-
             // 点击历史记录触发的搜索事件，搜索框需要添加text
             this.searchContent = content
             // 进行历史存储
             content && this.historyListLRU(content)
-            content && type && this.throttle(content,{key:'Enter'})
-            console.log(111)
             // 发送获取请求
             this.$api.search(content)
             .then(({data}) => {this.getSearchSuccess=true;this.songArr=data.result.songs})
             .catch(error => this.getSearchSuccess=false)
             // 隐藏搜索建议
             this.proposalBoole = false
-            console.log(234)
         },
         /* 使用防抖获取搜索建议 */
-        throttle(content,el){
+        throttle(content,el,time=100){
             this.proposalBoole = el.key=='Enter'?false:true
             if(this.i)clearTimeout(this.i)
             this.i = setTimeout(
@@ -92,7 +90,7 @@ export default {
                     this.$api.searchSuggest(content)
                     .then(({data}) => this.proposalList = data.result.songs)
                     .catch(error=>this.proposalList=[])
-                },100)
+                },time)
         },
         /* 使用LRU算法对搜索历史进行存储 */
         historyListLRU(content){
