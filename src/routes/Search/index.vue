@@ -5,8 +5,7 @@
             <div class="search">
                 <input ref="inpu" type="text" @focus="focus" @keyup="throttle(searchContent,$event)" @keyup.enter="clickSearch(searchContent)" v-model.trim="searchContent" />
                 <button @click="clickSearch(searchContent)">搜索</button>
-                <!-- v-show="proposalBoole" -->
-                <ul :class="{proposalr:!proposalBoole}" @mouseleave="mouseLeave" @mouseenter="mouseEnter" class="proposal">
+                <ul v-show="proposalBoole" @mouseleave="mouseLeave" @mouseenter="mouseEnter" class="proposal">
                     <!-- 搜索建议 -->
                     <li @click="clickSearch(item.name)" v-for="item in proposalList" :key="item.id">
                         {{item.name}}
@@ -47,7 +46,6 @@ export default {
     },
     methods: {
         blur(){
-            console.log('blur')
             this.proposalBoole=false
             this.$refs.inpu.removeEventListener('blur',this.blur)
         },
@@ -56,11 +54,9 @@ export default {
             this.$refs.inpu.addEventListener('blur',this.blur)
         },
         mouseEnter(){
-            console.log('enter')
             this.$refs.inpu.removeEventListener('blur',this.blur)
         },
         mouseLeave(){
-            console.log('leave')
             this.$refs.inpu.addEventListener('blur',this.blur)
         },
         /* 获取搜索结果*/
@@ -150,9 +146,6 @@ export default {
     background-color: #c2c0c0;
     position: absolute;
     top: 40px;
-}
-.proposalr{
-    display: none;
 }
 .history{
     box-sizing: border-box;
