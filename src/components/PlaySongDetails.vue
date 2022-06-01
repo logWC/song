@@ -105,13 +105,13 @@ export default {
             this.currentTimeList.push(time)
             this.currentContentList.push(content)
 
+            this.map.set(index,(index*30)+this.width*30)
             // 判断歌词长度 >= 400
             var width = this.measureText.measureText(content).width
             if(width>=400){
                 var i = Math.floor(width/400)
                 this.width+=i
             }
-            this.map.set(index,(index*30)+this.width*30)
         },
         /* 实时获取播放时间 */
         timeUpdated({target}){
@@ -198,10 +198,6 @@ export default {
     min-height: 300px;
     margin: 0 auto;
 }
-div{
-    width: 100%;
-    overflow: hidden;
-}
 .lyric{
     width: 400px;
     margin: 0 auto;
@@ -209,11 +205,9 @@ div{
 .zsq{
     font-family: Arial;
     font-size: 15px;
-    /* width: 400px; */
     height: 150px;
     overflow: auto;
     background-color: antiquewhite;
-    /* margin: 0 auto; */
     }
 .zsq::-webkit-scrollbar{
     /* 隐藏滚动条 */
@@ -226,5 +220,6 @@ p{
 }
 .red{
     color: rgb(224, 16, 16);
+    font-size: 18px;
 }
 </style>
