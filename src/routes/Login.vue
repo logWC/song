@@ -56,7 +56,7 @@ export default {
 .signIn{
     display: flow-root;
     max-width: 800px;
-    max-height: 700px;
+    max-height: 400px;
     margin: 10% auto;
     border-top-right-radius: 20%;
     background-image: linear-gradient(to right bottom,rgb(247, 247, 90),#5d85a8);
