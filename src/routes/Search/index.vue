@@ -51,6 +51,7 @@ export default {
         },
         focus(){
             this.proposalList.length==0 && this.throttle(this.searchContent,{key:'no'},0)
+            this.proposalBoole = true
             this.$refs.inpu.addEventListener('blur',this.blur)
         },
         mouseEnter(){
