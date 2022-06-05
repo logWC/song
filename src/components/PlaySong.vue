@@ -6,16 +6,17 @@
             <div class="thead">
                 <img @click="lyricClick" @error="picUrl=$options.data().picUrl" :src="picUrl" alt="加载出错啦" />
                 <!-- autoplay="autoplay" -->
-                <audio @error="test" ref="audio" controls="controls" :src="audioSrc">
+                <audio @error="error" ref="audio" controls="controls" :src="audioSrc">
                     对不起，你的浏览器不支持audio标签，请升级或更换浏览器进行播放
                 </audio>
+                <button @click="test">测试</button>
                 <button @click="$bus.$emit('lastSong')">上一首</button>
                 <button v-if="suspendBoolean" @click="suspend">暂停</button>
                 <button v-else @click="play">播放</button>
                 <button @click="$bus.$emit('nextSong')">下一首</button>
             </div>
         </div>
-        <PlaySongDetails @suspend="suspend" @play="play" :suspendBoolean="suspendBoolean" v-show="true" />
+        <PlaySongDetails @suspend="suspend" @play="play" :suspendBoolean="suspendBoolean" />
     </div>
 </template>
 <script>
@@ -37,27 +38,18 @@ export default {
         }
     },
     methods: {
-        // src失效
+        /* 测试 */
         test(){
-            let {data} = this.$api.checkMusic(this.musicId)
-            if(data.success){
-                if(this.musicId==this.musicIdr){
-                    this.audioSrc=null
-                    return
-                }
-                this.musicIdr=this.musicId
-                this.$api.song(this.musicId)
-                .then(({data})=>this.audioSrc=data.data[0].url)
-                this.int = setInterval(()=>{
-                        if(this.audioEl.readyState==4){
-                            clearInterval(this.int);
-                            this.play()
-                            console.log('开始播放')
-                        }
-                    },1000)
-            }else{
-                this.$bus.$emit('nextSong')
-            }
+        },
+        // src失效
+        error(){
+            this.$api.checkMusic(this.musicId)
+            .then(
+                ({data})=>{
+                    !data.success && this.audioClear()
+                    data.success && this.music(this.musicId)
+                })
+            .catch((error)=>this.audioClear())
 
         },
         /* 播放音乐 */
@@ -77,12 +69,10 @@ export default {
                     // 获取歌词
                     this.$bus.$emit('obtainLyric',id)
                     // 兼容autoplay失效的浏览器（点击歌曲但无法自动播放）
-                    // this.$nextTick(()=>{this.play()})
                     this.int = setInterval(()=>{
                         if(this.audioEl.readyState==4){
                             clearInterval(this.int);
                             this.play()
-                            console.log('开始播放')
                         }
                     },1000)
                 }else{
@@ -90,7 +80,10 @@ export default {
                     alert('歌曲未获得版权，请播放其他歌曲')
                 }
             })
-            .catch(error => this.$bus.$emit('nextSong'))
+            .catch(error => {
+                alert('出错了，好像断网了呀！');
+                this.audioClear()
+            })
         },
         /* 暂停 */
         suspend(){
@@ -106,8 +99,9 @@ export default {
             ?this.$router.push('/lyrics')
             :console.log('现在就在歌词页')
         },
-        sendSongData(){
-            this.$bus.$emit('getSongData',this.audioEl)
+        /* 传递歌曲信息 */
+        sendAudioTab(){
+            this.$bus.$emit('getAudioTab',this.audioEl)
         },
         /* 鼠标穿入元素 */
         penetrate(){
@@ -147,7 +141,7 @@ export default {
         // 设置重置audio事件
         this.$bus.$on('audioClear',this.audioClear)
         // 设置发送歌曲数据方法
-        this.$bus.$on('sendSongData',this.sendSongData)
+        this.$bus.$on('sendAudioTab',this.sendAudioTab)
     },
     mounted() {
         // 设置绑定元素
