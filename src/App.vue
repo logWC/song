@@ -3,7 +3,7 @@
     <keep-alive include="Layout">
       <router-view class="loyoutClass" ></router-view>
     </keep-alive>
-    <PlaySong />
+    <PlaySong v-show="$router.history.current.path!='/'" />
     <Tail />
   </div>
 </template>
@@ -18,8 +18,12 @@ export default {
   methods: {
     loginStatus(){
       this.$api.loginStatus()
-      .then(({data})=>this.$store.dispatch('userData', data.data.profile))
-      .catch(error=>console.log(error))
+      .then(({data})=>this.$store.dispatch('profiles/userData', data.data.profile))
+      .catch(error=>{
+        if(error.toString().indexOf('400')!=-1){
+          console.log('未登录')
+        }
+      })
     }
   },
   created() {
