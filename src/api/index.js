@@ -13,7 +13,7 @@ export default {
     },
     // 登录状态
     loginStatus(){
-        return axios.get(`/api/login/status`)
+        return axios.get(`/api/login/status?time=${time()}`)
     },
     // 刷新登录状态
     loginRefresh(){
@@ -33,7 +33,7 @@ export default {
     },
     // 推荐歌单
     recommend(){
-        return axios.get(`/api/recommend/resource`)
+        return axios.get(`/api/recommend/resource?time=${time()}`)
     },
     // 歌单详情
     songListDetails(id){
