@@ -15,28 +15,33 @@ export default new VueRouter({
             // 主页、榜单、我的、搜索
             path:'/layout',
             name:'Layout',
-            component:()=>import('./Layout.vue'),
+            component:()=>import('./layout/index.vue'),
             redirect:'/layout/home',
             children:[
                 {
                     path:'home',
                     name:'Home',
-                    component:()=>import('./Home/index.vue')
+                    component:()=>import('./layout/Home/index.vue')
                 },
                 {
                     path:'topic',
                     name:'Topic',
-                    component:()=>import('./Topic/index.vue')
+                    component:()=>import('./layout/Topic/index.vue')
                 },
                 {
                     path:'mine',
                     name:'Mine',
-                    component:()=>import('./Mine/index.vue'),
+                    component:()=>import('./layout/Mine/index.vue'),
                 },
                 {
                     path:'search',
                     name:'Search',
-                    component:()=>import('./Search/index.vue')
+                    component:()=>import('./layout/Search/index.vue')
+                },
+                {
+                    path:'skiproute',
+                    name:'skipRoute',
+                    component:()=>import('./layout/skipRoute/index.vue')
                 }
             ]
         },
