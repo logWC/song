@@ -1,18 +1,20 @@
 <template>
-    <div class="signIn" v-if="signIn">
-        <div class="user">
-            <h3>网易云登录</h3>
-            <div>
-                <input @keyup.enter="removeFocus" @focus="error=false" type="text" v-model="phone" placeholder="手机号" />
-                <input ref="password" @keyup.enter="logon" @focus="error=false" type="password" v-model="password" placeholder="密码" />
-                <span class="error" v-if="error">手机号或密码错误，请重新输入</span>
+    <div style="background-color:transparent">
+        <div class="signIn" v-if="signIn">
+            <div class="user">
+                <h3>网易云登录</h3>
+                <div>
+                    <input @keyup.enter="removeFocus" @focus="error=false" type="text" v-model="phone" placeholder="手机号" />
+                    <input ref="password" @keyup.enter="logon" @focus="error=false" type="password" v-model="password" placeholder="密码" />
+                    <span class="error" v-if="error">手机号或密码错误，请重新输入</span>
+                </div>
+                <button @click="logon">登录</button>
+                <!-- <sub @click="tourist">游客模式</sub>  禁止了游客播放歌曲 -->
             </div>
-            <button @click="logon">登录</button>
-            <!-- <sub @click="tourist">游客模式</sub>  禁止了游客播放歌曲 -->
+            <p>网站仅供学习使用</p>
+            <!-- <p>注：游客模式部分功能会受限</p> -->
+            <router-view></router-view>
         </div>
-        <p>网站仅供学习使用</p>
-        <!-- <p>注：游客模式部分功能会受限</p> -->
-        <router-view></router-view>
     </div>
 </template>
 <script>
@@ -34,18 +36,29 @@ export default {
             /* 登录 */
             this.$api.logon(this.phone,this.password)
             .then(({data}) => {
-                this.$store.dispatch('userData',data.profile)
-                this.tourist()
+                this.$store.dispatch('profiles/userData',data.profile)
+                this.$router.replace('/layout/home')
             })
             .catch(error => this.error = true)
         },
-        /* 转换路由 */
-        tourist(){
-            this.$router.replace('/layout/home')
-        }
     },
     created() {
-        if(!this.$store.state.profile){this.signIn=true}else{this.tourist()}
+        console.log(1)
+        if(!this.$store.state.profiles.profile){
+            this.$api.loginStatus()
+            .then(({data})=>{
+                this.$store.dispatch('profiles/userData', data.data.profile)
+                this.$router.replace('/layout/home')
+            })
+            .catch(error=>{
+                if(error.toString().indexOf('400')!=-1){
+                    console.log('未登录')
+                }
+                this.signIn=true
+            })
+        }else{
+            this.$router.replace('/layout/home')
+        }
     },
     destroyed() {
         console.log('登录组件销毁了')
@@ -54,18 +67,17 @@ export default {
 </script>
 <style scoped>
 .signIn{
-    display: flow-root;
     max-width: 800px;
-    max-height: 400px;
-    margin: 10% auto;
+    margin: 20% auto;
+    border: 1px solid rgb(173, 149, 149);
     border-top-right-radius: 20%;
-    background-image: linear-gradient(to right bottom,rgb(247, 247, 90),#5d85a8);
+    background-image: linear-gradient(to right bottom,rgb(247, 247, 90),rgb(153, 207, 153),yellowgreen,#5d85a8);
 }
 .user{
     position: relative;
     width: 50%;
     height: 300px;
-    margin: 10% auto;
+    margin: 15% auto;
     background-color: antiquewhite;
 }
 .user h3{
