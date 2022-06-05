@@ -36,7 +36,6 @@ export default {
             idList:[],
             index:'',
             playList:null,
-            arrIndex:-1,
             zsqRef:'',
             measureText: null,
             map:new Map(),
@@ -45,17 +44,17 @@ export default {
         }
     },
     methods: {
-        /* 改变播放顺序 */
+        /* 改变播放顺序，转到vuex */
         changeOrder(num){
             this.orderNum = num
             if(!this.playList) return
             var id = this.playList[this.index]
-            var arr = JSON.parse(JSON.stringify(this.idList))
+            var arr = [].concat(this.idList)
             this.playList = num!=2?arr:this.shuffleMethod(arr)
             this.index = this.playList.findIndex(val=>val==id)
         },
 
-        /* 使用shuffle算法进行随机排序 */
+        /* 使用shuffle算法进行随机排序，转到vuex */
         shuffleMethod(arr){
             // 深克隆数组
             let i = arr.length
@@ -65,12 +64,13 @@ export default {
             }
             return arr
         },
-        /* 发送获取歌词及时间的请求 */
+        /* 发送获取歌词及时间的请求，转到vuex */
         obtainLyric(id){
             this.$api.lyric(id)
             .then(content => this.filterLRC(content.data.lrc.lyric))
             .catch(error=> console.log(`获取歌词失败${error}`))
         },
+        /* 转到vuex */
         filterLRC(value){
             // 清空时间
             this.currentTimeList = []
@@ -78,13 +78,13 @@ export default {
             this.currentContentList = []
             // 清空width：控制scroll
             this.width=0
+            this.timeIndex=0
             // 清空map：每个时间段对应的scrollTop
             this.map.clear()
             if (!value) return
             let lyric = value.split("\n")
             let reg = /\[\d*:\d*(\.|:)\d*/g
-            var index = 0
-            lyric.forEach((val)=>{
+            lyric.forEach((val,index)=>{
                 // 转换时间为秒，并以键值对显示 时间：歌词
                 let timeReg = val.match(reg)
                 if (timeReg){
@@ -93,14 +93,12 @@ export default {
                     let sec = parseFloat(timeReg[0].match(/\d*\.\d/g)[0])
                     let time = min*60 + sec
                     this.timeList(time,content,index)
-                    index++
                 }
             })
             // 优化最后一句歌词动画
             this.currentTimeList.push(999999)
-            console.log(this.currentContentList)
         },
-        /* 获取时间与及对应歌词 */
+        /* 获取时间与及对应歌词，转到vuex */
         timeList(time,content,index){
             this.currentTimeList.push(time)
             this.currentContentList.push(content)
@@ -113,7 +111,7 @@ export default {
                 this.width+=i
             }
         },
-        /* 实时获取播放时间 */
+        /* 实时获取播放时间，转到lyric */
         timeUpdated({target}){
             let time = target.currentTime
             while(this.currentTimeList[this.timeIndex] < time){
@@ -124,17 +122,14 @@ export default {
                 this.zsqRef.scrollTop = this.map.get(this.timeIndex-2)
                 this.timeIndex--
             }
-
             if(target.ended&&this.playList){this.orderNum==0?this.playSong(this.playList[this.index]):this.nextSong()}
         },
-
-        /* 获取歌曲id列表 */
+        /* 获取歌曲id列表，转到vuex */
         musicIdList(idList){
-            this.idList = idList
-            this.playList = JSON.parse(JSON.stringify(idList))
+            this.idList = [].concat(idList)
+            this.playList = [].concat(idList)
         },
-
-        /* 点击播放 */
+        /* 点击播放，转到playsong，重定向到了vuex，playsong需要通过监听vuex的src变化 */
         currentSong(id){
             this.playSong(id)
             setTimeout(()=>{
@@ -145,29 +140,30 @@ export default {
                 this.index = this.playList.findIndex(val=>val==id)
             },0)
         },
-        /* 上一首 */
+        /* 上一首，转到lyric */
         lastSong(){
             if(this.playList==null)return
             this.index = this.index==0?this.playList.length-1:this.index-1
             this.playSong(this.playList[this.index])
         },
-        /* 下一首 */
+        /* 下一首，转到lyric */
         nextSong(){
             if(this.playList==null)return
             this.index = this.index==this.playList.length-1?0:this.index+1
             this.playSong(this.playList[this.index])
         },
-        // 获取歌曲url和歌词
+        // 获取歌曲url和歌词，清除
         playSong(id){
             this.$bus.$emit('music',id)
         },
+        /* 转到lvuex */
         elementMe(){
             this.zsqRef = this.$refs.zsqRef;
             let canvas = document.createElement("canvas");
             this.measureText = canvas.getContext('2d');
             this.measureText.font = "15px Arial"
         },
-        /* 恢复歌词出厂 */
+        /* 恢复歌词出厂，转到vuex */
         lyricClear(){
             this.currentTimeList = []
             this.currentContentList = []
