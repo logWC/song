@@ -22,7 +22,7 @@ export default {
     },
     computed:{
         ...mapState({
-            likeList:state=>state.likeDataList
+            likeList:state=>state.profiles.likeDataList
         })
     },
     created() {
