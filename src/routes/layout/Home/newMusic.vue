@@ -2,8 +2,8 @@
     <div>
         <div v-if="recommendNewMusicList.length">
             <h2>新音乐</h2>
-            <ul class="recommendNewMusic" @click.once="$idListMe(idList)">
-                <li @click="$play(item.id)" v-for="item in recommendNewMusicList" :key="item.id">
+            <ul class="recommendNewMusic" @click.once="$store.commit('song/idListMe',idList)">
+                <li @click="$store.dispatch('song/clickPlayMe',item.id)" v-for="item in recommendNewMusicList" :key="item.id">
                     <img v-lazy="item.picUrl" :alt="item.name">
                     <div>
                         <p>{{item.name}}</p>
