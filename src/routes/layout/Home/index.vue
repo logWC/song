@@ -11,10 +11,7 @@ import recommendSongSheet from './recommendSongSheet.vue'
 import newMusic from './newMusic.vue'
 export default {
     name:'Home',
-    components: { recommendSongSheet, newMusic },
-    created() {
-        console.log('home创建并缓存了')
-    }
+    components: { recommendSongSheet, newMusic }
 }
 </script>
 <style scoped>
