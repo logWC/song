@@ -25,11 +25,12 @@ export default {
             /* 清空播放器、清除vuex的个人信息、转换路由、退出登录、清空路由缓存 */
             this.$api.logout()
             .then(content=>{
-                this.$bus.$emit('audioClear')
+                this.$store.commit('song/clearAudio','clearAll')
                 this.$store.dispatch('profiles/clearDate',['profile','likeDataList'])
                 // 通过第三方路由转向登录页可清除路由缓存
                 this.$router.push('/layout/skiproute')
             })
+            .catch(error=>console.log('网络出错了好像'))
         },
         likeListm(){
             /* 切换到like列表 */
