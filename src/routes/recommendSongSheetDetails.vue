@@ -30,6 +30,7 @@ export default {
                 ({data}) => {
                     this.songArr = data.playlist.tracks
                     this.imageSrc = data.playlist.coverImgUrl
+                    document.documentElement.scrollTop=0
                 }
             )
             .catch(error => alert(`获取歌曲失败: ${error}`))
@@ -37,14 +38,13 @@ export default {
     },
     created() {
         this.getSongIdList()
-        document.documentElement.scrollTop=0
     }
 }
 </script>
 <style scoped>
 h3{
     text-align: center;
-    margin: 15px 0;
+    padding: 15px 0;
 }
 img{
     width: 100px;
@@ -65,7 +65,7 @@ li span:last-of-type{
 .head-div{
     display: flex;
     height: 100px;
-    margin: 15px;
+    margin: 0 35px;
 }
 .head-div > div{
     flex-grow: 1;
