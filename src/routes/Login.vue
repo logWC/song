@@ -43,7 +43,6 @@ export default {
         },
     },
     created() {
-        console.log(1)
         if(!this.$store.state.profiles.profile){
             this.$api.loginStatus()
             .then(({data})=>{
