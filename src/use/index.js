@@ -1,17 +1,4 @@
 export default (Vue,options)=>{
-  // 点击播放
-  Vue.prototype.$play = function(id){
-      /* 播放歌曲 */
-      // console.log(options)
-      this.$bus.$emit('currentSong',id)
-      this.$store.dispatch('song/clickPlayMe',id)
-  }
-  // 传递id列表
-  Vue.prototype.$idListMe = function(idList){
-      /* 获取正在播放的歌曲列表 */
-      this.$bus.$emit('musicIdList',idList)
-      this.$store.dispatch('song/idListMe',idList)
-  }
   // 存cookie
   Vue.prototype.$setCookie = function(name,data,time){
       /* 存储进cookie*/
