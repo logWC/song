@@ -17,9 +17,9 @@ const profiles = {
             dispatch('obtainLikeList',profile.userId)
         },
         /* 获用户喜欢歌曲 */
-        async obtainLikeList({commit},userId){
+        async obtainLikeList({state,commit}){
             // 数组：获取所有歌曲id
-            let idList = await this.$api.likeList(userId)
+            let idList = await this.$api.likeList(state.profile.userId)
             .then(({data}) => data.ids)
             // 数组：异步获取所有歌曲详情
             let likeDataList = await this.$api.songDetail(idList)
@@ -58,13 +58,12 @@ const song = {
     state:()=>({
         id:null,
         src:null,
-        url:null,
+        url:require('@/assets/logo.png'),
         idList:[],
         playList:[],
         idIndex:0,
         currentTimeList:[],
         currentContentList:[],
-        timeIndex:0,
         extrasHeight:0,
         map:new Map(),
         orderNum:0,
@@ -72,13 +71,12 @@ const song = {
     }),
     getters:{},
     actions:{
-        /* 点击播放，每一次都会改动playList，每一次都会改动idIndex */
+        /* 点击播放列表，随机下会改动playList、idIndex */
         clickPlayMe({state,dispatch,commit},id){
             dispatch('play',id)
-            /* 修改idIndex及playList */
             setTimeout(()=>{
                 state.orderNum==2&&dispatch('playListMe',[].concat(state.playList))
-                commit('oneState',{key:'idIndex',val:state.playList.findIndex(val=>val==id)})
+                state.orderNum==2&&commit('oneState',{key:'idIndex',val:state.playList.findIndex(val=>val==id)})
             },0)
         },
         /* 歌曲信息赋值 */
@@ -88,23 +86,31 @@ const song = {
             /* 获取歌曲src */
             this.$api.song(id)
             .then(({data})=>{
-                let src = data.data[0].url
-                if(src){
-                    /* 获取图片url */
-                    this.$api.songDetail(id)
-                    .then(({data})=>{
-                        /* 图片赋值 */
-                        commit('oneState',{key:'url',val:data.songs[0].al.picUrl})
-                        /* 歌词赋值 */
-                        dispatch('lyricMe',id)
-                        /* 音源赋值 */
-                        commit('oneState',{key:'src',val:src})
-                    })
-                }else{
-                    /* 清空：id、图片、音源、歌词 */
-                    commit('clearAudio')
-                    alert('歌曲没找到播放源，可能是没有版权')
+                if(data.code==200){
+                    let src = data.data[0].url
+                    if(src){
+                        /* 获取图片url */
+                        this.$api.songDetail(id)
+                        .then(({data})=>{
+                            /* 图片赋值 */
+                            commit('oneState',{key:'url',val:data.songs[0].al.picUrl})
+                            /* 歌词赋值 */
+                            dispatch('lyricMe',id)
+                            /* 音源赋值 */
+                            commit('oneState',{key:'src',val:src})
+                        })
+                    }else{
+                        /* 清空：id、图片、音源、歌词 */
+                        commit('clearAudio')
+                        console.log('歌曲没找到播放源，可能是没有版权')
+                    }
+                }else if(data.code==-462){
+                    alert('请登录播放')
                 }
+            })
+            .catch(error => {
+                alert('出错了，好像断网了呀！')
+                commit('clearAudio')
             })
         },
         /* 歌词数组赋值 */
@@ -132,9 +138,9 @@ const song = {
                         map.set(index,(index*30)+state.extrasHeight)
                         
                         width = measureText.measureText(content).width
-                        if(width>=600){
-                            i = Math.floor(width/600)
-                            commit('oneState',{key:'extrasHeight',val:30*i+state.extrasHeight})
+                        if(width>=400){
+                            i = Math.floor(width/400)
+                            commit('oneState',{key:'extrasHeight',val:(30*i)+state.extrasHeight})
                         }
                     }
                 })
@@ -146,24 +152,18 @@ const song = {
                 commit('oneState',{key:'map',val:map})
             })
         },
-        /* 获取id数组 */
-        idListMe({commit},idList){
-            commit('idListMe',idList)
-        },
         /* 修改播放顺序 */
         orderNumMe({state,dispatch,commit}){
             commit('oneState',{key:'orderNum',val:state.orderNum!=2?state.orderNum+1:0})
             if(!state.playList)return
-            if(state.orderNum==2){
-                dispatch('playListMe',[].concat(state.playList))
-            }else{
-                commit('oneState',{key:'playList',val:[].concat(state.idList)})
-            }
-            commit('oneState',{key:'idIndex',val:state.playList.findIndex(val=>val==state.id)})
+            state.orderNum==2
+            ?dispatch('playListMe',[].concat(state.playList))
+            :commit('oneState',{key:'playList',val:[].concat(state.idList)})
+            commit('oneState',{key:'idIndex',val:state.playList.findIndex(id=>id==state.id)})
         },
         /* 上一首 */
         lastMe({state,dispatch,commit}){
-            if(state.playList==null)return
+            if(state.playList.length==0)return
             commit('oneState',{
                 key:'idIndex',
                 val:state.idIndex==0?state.playList.length-1:state.idIndex-1
@@ -172,7 +172,7 @@ const song = {
         },
         /* 下一首 */
         nextMe({state,dispatch,commit}){
-            if(state.playList==null)return
+            if(state.playList.length==0)return
             commit('oneState',{
                 key:'idIndex',
                 val:state.idIndex!=state.playList.length-1?state.idIndex+1:0
@@ -190,39 +190,32 @@ const song = {
         }
     },
     mutations:{
+        /* ids赋值 */
         idListMe(state,idList){
             state.idList = [].concat(idList)
             state.playList = [].concat(idList)
         },
-        lyricMe(state,obj){
-            state.currentTimeList.push(obj.currentTime)
-            state.currentContentList.push(obj.currentContent)
-            state.map.set(obj.timeIndex,(obj.timeIndex*30)+state.extrasHeight)
-            /* 获取可能会换行的歌词的额外高度 */
-            let width = measureText.measureText(obj.currentContent).width
-            if(width>=600){
-                state.extrasHeight+=Math.floor(width/600)
-            }
-        },
-        orderNumMe(state){
-            state.orderNum=state.orderNum!=2?state.orderNum+1:0
-        },
+        /* 单个赋值 */
         oneState(state,obj){
             state[obj.key] = obj.val
         },
+        /* 清空数据 */
         clearAudio(state,boolean=true){
             if(boolean){
                 state.id=0
                 state.src=null
-                state.url=null
-                state.currentTimeList=[],
-                state.currentContentList=[],
-                state.map.clear()
+                state.url=require('@/assets/logo.png')
+                if(boolean=='clearAll'){
+                    state.idList = []
+                    state.playList = []
+                    state.orderNum = 0
+                }
             }
-            state.timeIndex=0,
+            state.currentTimeList=[],
+            state.currentContentList=[],
+            state.map.clear()
             state.extrasHeight=0
         }
-
     }
 }
 
