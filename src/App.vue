@@ -1,15 +1,15 @@
 <template>
   <div>
-    <keep-alive include="Layout">
+    <keep-alive include="Layout,lyrics">
       <router-view class="loyoutClass" ></router-view>
     </keep-alive>
-    <PlaySong v-show="$router.history.current.path!='/'" />
+    <PlaySong v-if="$router.history.current.path!='/'" />
     <Tail />
   </div>
 </template>
 <script>
 // 导入尾部组件
-import Tail from './components/tail/index.vue'
+import Tail from './components/Tail.vue'
 // 导入下标播放组件
 import PlaySong from './components/PlaySong.vue'
 export default {
@@ -38,7 +38,7 @@ export default {
   min-width: 400px;
   max-width: 800px;
   min-height: 900px;
-  margin: 0 auto;
+  margin: 20px auto;
   background-color: rgb(222, 232, 240);
 }
 </style>
