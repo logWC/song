@@ -1,7 +1,7 @@
 <template>
     <div>
-        <h2>我喜欢的歌</h2>
-        <SongLi :songArr="songArr" />
+        <h3>我喜欢的歌</h3>
+        <SongLi :songArr="likeDataList" />
     </div>
 </template>
 <script>
@@ -15,25 +15,17 @@ export default {
             songArr:[]
         }
     },
-    methods: {
-        getSongIdList(){
-            this.songArr = this.likeList
-        }
-    },
     computed:{
         ...mapState({
-            likeList:state=>state.profiles.likeDataList
+            likeDataList:state=>state.profiles.likeDataList
         })
-    },
-    created() {
-        this.getSongIdList()
-    },
+    }
 }
 </script>
 <style scoped>
-h2{
+h3{
     text-align: center;
-    padding: 30px 0;
-    background-color: rgb(0, 255, 76);
+    padding: 15px 0;
+    margin: 0 15px;
 }
 </style>
