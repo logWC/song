@@ -6,7 +6,9 @@ import api from '../src/api/index'
 // 导入vuex
 import store from './vuex/index'
 // 导入插件
-import installs from '../src/components/uses/index'
+import installs from './use/index'
+// 导入字体符号
+import '@/assets/fonts/icon'
 Vue.use(installs,{'opt':'我就是opt'})
 
 Vue.config.productionTip = false
