@@ -20,7 +20,7 @@ export default {
       this.$api.loginStatus()
       .then(({data})=>this.$store.dispatch('profiles/userData', data.data.profile))
       .catch(error=>{
-        if(error.toString().indexOf('400')!=-1){
+        if(error.toString().includes('400')){
           console.log('未登录')
         }
       })

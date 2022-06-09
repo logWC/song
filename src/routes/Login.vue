@@ -50,7 +50,7 @@ export default {
                 this.$router.replace('/layout/home')
             })
             .catch(error=>{
-                if(error.toString().indexOf('400')!=-1){
+                if(error.toString().includes('400')){
                     console.log('未登录')
                 }
                 this.signIn=true
