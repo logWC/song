@@ -1,7 +1,8 @@
 <template>
     <div @[hide]="hideMe" v-show="songArr.length!=0" class="body-div">
         <p style="font-weight:bold;font-size:18px">歌曲{{songArr.length}}</p>
-        <ul @click.once="$store.commit('song/idListMe',songArr.map(val=>val.id))">
+        <!-- @click.once.capture="$store.commit('song/idListMe',songArr.map(val=>val.id))" -->
+        <ul>
             <li>
                 <div>
                     <span>歌曲</span>
@@ -16,8 +17,8 @@
                     <span>详情</span>
                 </div>
             </li>
-            <li v-for="(item,index) in songArr" :key="item.id">
-                <div @click="$store.dispatch('song/clickPlayMe',item.id)">
+            <li v-for="item in songArr" :key="item.id">
+                <div @click="playMe(item.id)">
                     <span>{{item.name}}</span>
                 </div>
                 <div>
@@ -28,11 +29,11 @@
                     <span v-if="item.al">{{item.al.name}}</span>
                     <span v-if="item.album">{{item.album.name}}</span>
                 </div>
-                <div @click.stop>
-                    <svg :class="{display:index==detailsIndex}" class="icon none" aria-hidden="true">
-                        <use xlink:href="#icon-aixinD"></use>
+                <div>
+                    <svg @click.stop="likeIconMe(item.id)" v-if="item.id==detailsIndex" class="icon" aria-hidden="true">
+                        <use :xlink:href="likeIcon"></use>
                     </svg>
-                    <svg @click="details(index)" class="icon" aria-hidden="true">
+                    <svg @click="details(item.id)" class="icon" aria-hidden="true">
                         <use xlink:href="#icon-androidgengduo"></use>
                     </svg>
                 </div>
@@ -42,6 +43,7 @@
 </template>
 <script>
 import {songName} from '@/mixins/index.js'
+import { mapState } from 'vuex'
 export default {
     name:'SongLi',
     mixins:[songName],
@@ -49,19 +51,51 @@ export default {
     data() {
         return {
             detailsIndex:-1,
-            hide:null
+            hide:null,
+            likeIcon:'#icon-aixinD',
+            noPlayState:true
         }
     },
     methods: {
-        details(index){
-            this.detailsIndex = index
+        playMe(id){
+            if(this.noPlayState){
+                this.$store.commit('song/idListMe',this.songArr.map(val=>val.id))
+                this.noPlayState = false
+            }
+            this.$store.dispatch('song/clickPlayMe',id)
+        },
+        details(id){
+            this.likeIcon = this.likeIdList.includes(id)
+            ?'#icon-aixinshoucang'
+            :'#icon-aixinD';
+            this.detailsIndex = id
             this.hide = 'click'
         },
         hideMe(){
-            console.log('触发了rootDiv的点击')
             this.detailsIndex = -1
             this.hide = null
+        },
+        async likeIconMe(id){
+            let boolean = await this.$api.like(id,this.likeIcon=='#icon-aixinD')
+            .then(val=>true)
+            .catch(error=>{
+                error.toString().includes(500)
+                ?alert('没有版权，喜欢失败')
+                :alert('未知错误，喜欢失败')
+                return false
+            })
+            if(boolean){
+                this.$store.dispatch('profiles/obtainLikeList')
+                this.likeIcon = this.likeIcon=='#icon-aixinD'
+                ?'#icon-aixinshoucang'
+                :'#icon-aixinD'
+            }
         }
+    },
+    computed:{
+        ...mapState({
+            likeIdList:state=>state.profiles.likeIdList
+        })
     },
     watch:{
         // songArr:{
@@ -125,10 +159,8 @@ li > div:nth-of-type(4){
 }
 .none{
     display: none;
-    z-index: 0;
 }
 .display{
     display: inline-block;
-    z-index: 2;
 }
 </style>
