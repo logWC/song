@@ -45,7 +45,6 @@ export default {
     watch:{
         currentTimeList(val){
             this.timeIndex = 0
-            console.log('timeIndex为零了')
         }
     },
     created() {
@@ -66,11 +65,11 @@ export default {
         }, 0);
     },
     render(h) {
+        // 顶部
         const headrDiv = h('div',{
             class:['headr']
         },'未使用')
-        
-
+        // 歌词及图片
         const picDiv = h('div',{
             class:['pic']
         },'这里放照片')
@@ -84,12 +83,10 @@ export default {
             class:['lyric'],
             ref:'lyric'
         },[ps(8),lyricP,ps(9)])
-        
         const bodyrDiv = h('div',{
             class:['bodyr']
         },[picDiv,lyricDiv])
-        
-
+        // 按钮
         const lastButton = h('button',{
             on:{
                 click: () => this.$store.dispatch('song/lastMe')
