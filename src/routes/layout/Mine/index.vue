@@ -4,7 +4,7 @@
             <img :src="profile.avatarUrl" alt="正在加载">
             <p> {{profile.nickname}} </p>
         </div>
-        <div class="likeList" @click="likeListm" v-if="likeDataList">
+        <div class="likeList" @click="likeListm" v-if="likeDataList.length!=0">
             <img :src="likeDataList[0].al.picUrl">
             <div>
                 <p>我喜欢的音乐</p>
@@ -26,7 +26,7 @@ export default {
             this.$api.logout()
             .then(content=>{
                 this.$store.commit('song/clearAudio','clearAll')
-                this.$store.dispatch('profiles/clearDate',['profile','likeDataList'])
+                this.$store.dispatch('profiles/clearDate',['profile','likeDataList','likeIdList'])
                 // 通过第三方路由转向登录页可清除路由缓存
                 this.$router.push('/layout/skiproute')
             })

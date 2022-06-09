@@ -7,26 +7,31 @@ const profiles = {
     namespaced:true,
     state:()=>({
         profile:null,
-        likeDataList:null
+        likeDataList:[],
+        likeIdList:[]
     }),
     getters:{},
     actions:{
         /* 用户信息及喜欢列表 */
         userData({commit,dispatch},profile){
-            commit('userData',profile)
+            // commit('userData',profile)
+            commit('oneState',{key:'profile',val:profile})
             dispatch('obtainLikeList',profile.userId)
         },
         /* 获用户喜欢歌曲 */
         async obtainLikeList({state,commit}){
             // 数组：获取所有歌曲id
-            let idList = await this.$api.likeList(state.profile.userId)
+            let likeIdList = await this.$api.likeList(state.profile.userId)
             .then(({data}) => data.ids)
+            /* 存储idList */
+            commit('oneState',{key:'likeIdList',val:likeIdList})
             // 数组：异步获取所有歌曲详情
-            let likeDataList = await this.$api.songDetail(idList)
+            let likeDataList = await this.$api.songDetail(state.likeIdList)
             .then(con=>con.data.songs)
             // 数组：同步歌曲详情（排序）
-            likeDataList = idList.map(id => likeDataList.find(val => val.id == id))
-            commit('likeDataList',likeDataList)
+            likeDataList = state.likeIdList.map(id => likeDataList.find(val => val.id == id))
+            // commit('likeDataList',likeDataList)
+            commit('oneState',{key:'likeDataList',val:likeDataList})
         },
         /* 清空用户数据 */
         clearDate({commit},arr){
@@ -34,13 +39,8 @@ const profiles = {
         }
     },
     mutations:{
-        /* 对象：用户信息，id，name，img等赋值 */
-        userData(state,obj){
-            state.profile = obj
-        },
-        /* 数组对象：喜欢歌曲name、picUrl赋值 */
-        likeDataList(state,arrObj){
-            state.likeDataList = arrObj
+        oneState(state,obj){
+            state[obj.key] = obj.val
         },
         /* 清空用户数据 */
         clearDate(state,key){
@@ -74,10 +74,8 @@ const song = {
         /* 点击播放列表，随机下会改动playList、idIndex */
         clickPlayMe({state,dispatch,commit},id){
             dispatch('play',id)
-            setTimeout(()=>{
-                state.orderNum==2&&dispatch('playListMe',[].concat(state.playList))
-                state.orderNum==2&&commit('oneState',{key:'idIndex',val:state.playList.findIndex(val=>val==id)})
-            },0)
+            state.orderNum==2&&dispatch('playListMe',[].concat(state.playList))
+            commit('oneState',{key:'idIndex',val:state.playList.findIndex(val=>val==id)})
         },
         /* 歌曲信息赋值 */
         play({dispatch,commit},id){
