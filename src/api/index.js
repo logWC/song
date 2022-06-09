@@ -25,10 +25,10 @@ export default {
     },
     // 喜欢列表
     likeList(id){
-        return axios.get(`/api/likelist?uid=${id}`)
+        return axios.get(`/api/likelist?uid=${id}&time=${time()}`)
     },
     // 喜欢
-    like(id,boole=true){
+    like(id,boole){
         return axios.get(`/api/like?id=${id}&like=${boole}`)
     },
     // 推荐歌单
