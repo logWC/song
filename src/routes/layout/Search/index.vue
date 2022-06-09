@@ -3,11 +3,11 @@
         <div>
             <!-- 搜索框 -->
             <div class="search">
-                <input ref="inpu" type="text" @focus="focus" @keyup="throttle(searchContent,$event)" @keyup.enter="clickSearch(searchContent)" v-model.trim="searchContent" />
+                <input ref="inpu" type="text" @blur="blur" @click.stop @focus="focus" @keyup="throttle(searchContent,$event)" @keyup.enter="clickSearch(searchContent)" v-model.trim="searchContent" />
                 <button @click="clickSearch(searchContent)">搜索</button>
                 <ul v-show="proposalBoole" @mouseleave="mouseLeave" @mouseenter="mouseEnter" class="proposal">
                     <!-- 搜索建议 -->
-                    <li @click="clickSearch(item.name)" v-for="item in proposalList" :key="item.id">
+                    <li @click.prevent="clickSearch(item.name)" v-for="item in proposalList" :key="item.id">
                         {{item.name}}
                     </li>
                 </ul>
@@ -24,7 +24,7 @@
                 </div>
             </div>
         </div>
-        <SongLi v-if="getSearchSuccess" :songArr="songArr" />
+        <SongLi v-if="getSearchSuccess || searchContent==''" :songArr="songArr" />
         <h4 v-else style="text-align:center">对不起，没搜索到你需要的内容</h4>
     </div>
 </template>
@@ -42,26 +42,22 @@ export default {
             historyList:[],
             songArr:[],
             getSearchSuccess:true,
+            hideBoolean:true
         }
     },
     methods: {
         blur(){
-            this.proposalBoole=false
-            this.$refs.inpu.removeEventListener('blur',this.blur)
+            this.proposalBoole=!this.hideNum
         },
         focus(){
-            if(this.proposalList.length==0){
-                this.throttle(this.searchContent,{key:'no'},0)
-            }else{
-                this.proposalBoole = true
-            }
-            this.$refs.inpu.addEventListener('blur',this.blur)
+            this.proposalBoole = true
+            this.hideNum = true
         },
         mouseEnter(){
-            this.$refs.inpu.removeEventListener('blur',this.blur)
+            this.hideNum = false
         },
         mouseLeave(){
-            this.$refs.inpu.addEventListener('blur',this.blur)
+            this.hideNum = true
         },
         /* 获取搜索结果*/
         clickSearch(content){
@@ -73,7 +69,11 @@ export default {
             content && this.historyListLRU(content)
             // 发送获取请求
             this.$api.search(content)
-            .then(({data}) => {this.getSearchSuccess=true;this.songArr=data.result.songs})
+            .then(({data}) => {
+                this.getSearchSuccess=true;
+                this.songArr=data.result.songs
+                this.throttle(content,{key:'Enter'})
+            })
             .catch(error => this.getSearchSuccess=false)
             // 隐藏搜索建议
             this.proposalBoole = false
@@ -84,7 +84,11 @@ export default {
             if(this.i)clearTimeout(this.i)
             this.i = setTimeout(
                 ()=>{
-                    if(!content){this.proposalList=[];this.proposalBoole=false;return}
+                    if(!content){
+                        this.proposalList=[];
+                        this.proposalBoole=false;
+                        return
+                    }
                     this.getSearchSuccess = true
                     // 获取搜索建议
                     this.$api.searchSuggest(content)
@@ -150,6 +154,7 @@ export default {
     background-color: #c2c0c0;
     position: absolute;
     top: 40px;
+    z-index: 1;
 }
 .history{
     box-sizing: border-box;
