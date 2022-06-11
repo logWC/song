@@ -70,9 +70,11 @@ export default {
             class:['headr']
         },'未使用')
         // 歌词及图片
+        // 图片
         const picDiv = h('div',{
             class:['pic']
         },'这里放照片')
+        // 歌词
         const ps = function (length){
             return new Array(length).fill(1).map((val)=>h('p',null,''))
         }
