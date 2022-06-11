@@ -1,6 +1,9 @@
 <template>
     <div>
-        <div class="bodyr" :class="{whole1:boole,whole2:!boole}" @mouseleave="wearOut(2000)" @mouseenter="penetrate">
+        <div class="bodyr"
+        :class="{whole1:boole,whole2:!boole}"
+        @[mouseleave]="wearOut(2000)"
+        @[mouseenter]="penetrate">
             <div style="background-color:transparent;height:20px"> </div>
             <div class="thead">
                 <img @click="lyricClick" @error="require('@/assets/logo.png')" :src="url" alt="加载出错啦" />
@@ -33,7 +36,9 @@ export default {
             setTime:null,
             suspendBoolean:false,
             audioEl:null,
-            int:null
+            int:null,
+            mouseenter:'mouseenter',
+            mouseleave:'mouseleave'
         }
     },
     methods: {
@@ -113,14 +118,20 @@ export default {
         }
     },
     created(){
-        // 隐藏下标播放
-        this.wearOut(4000)
         // 设置发送歌曲数据方法
         this.$bus.$on('sendAudioTab',this.sendAudioTab)
     },
     mounted() {
         // 设置绑定元素
         this.elementMe()
+        if(screen.width<screen.height){
+            this.mouseenter = null
+            this.mouseleave = null
+            this.boole = false
+        }else{
+            // 隐藏下标播放
+            this.wearOut(4000)
+        }
     }
 }
 </script>
@@ -146,7 +157,8 @@ export default {
     border: none;
 }
 .thead img{
-    width: 50px;
+    /* width: 50px; */
+    height: 50px;
 }
 .whole1{
     top:calc(100vh - 20px);

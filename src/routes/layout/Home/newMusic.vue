@@ -66,7 +66,7 @@ h2{
     margin: 5px 0;
 }
 .recommendNewMusic li img{
-    width: 60px;
+    /* width: 60px; */
     height: 60px;
 }
 .recommendNewMusic > li > div{
