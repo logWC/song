@@ -6,7 +6,7 @@
                 <li :style="{backgroundImage:'url('+item.picUrl+')'}" v-for="item in recommendNewMusicList" :key="item.id">
                     <img v-lazy="item.picUrl" :alt="item.name">
                     <div>
-                        <div class="singers" @click="$store.dispatch('song/clickPlayMe',item.id)">
+                        <div class="singers" @click="playMe(item.id)">
                             <p>{{item.name}}</p>
                             <span> {{item.song.artists | songName}} - {{item.song.album.name}} </span>
                         </div>
@@ -27,10 +27,18 @@ export default {
             recommendNewMusicList:[],
             idList:[],
             isText:'正在加载',
-            errorText:'出错了，无语死了'
+            errorText:'出错了，无语死了',
+            noPlayState:true
         }
     },
     methods: {
+        playMe(id){
+            if(this.noPlayState){
+                this.$store.commit('song/idListMe',this.songArr.map(val=>val.id))
+                this.noPlayState = false
+            }
+            this.$store.dispatch('song/clickPlayMe',id)
+        },
         obtainRecommendNewMusicList(){
             /* 获取歌曲列表、歌曲id列表 */
             this.$api.recommendNewMusic()
@@ -43,7 +51,10 @@ export default {
     },
     created() {
         this.obtainRecommendNewMusicList()
-    }
+    },
+    activated() {
+        this.noPlayState=true
+    },
 }
 </script>
 <style scoped>
