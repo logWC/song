@@ -24,7 +24,7 @@ a{
     transition: all 0.1s;
 }
 a:active{
-    color: black;
+    color: rgb(78, 106, 131);;
 }
 .active{
     background-color: rgb(222, 232, 240);
