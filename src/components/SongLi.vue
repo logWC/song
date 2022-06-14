@@ -33,7 +33,7 @@
                     <svg @click.stop="likeIconMe(item.id)" v-if="item.id==detailsIndex" class="icon" aria-hidden="true">
                         <use :xlink:href="likeIcon"></use>
                     </svg>
-                    <svg @click="details(item.id)" class="icon" aria-hidden="true">
+                    <svg @click.stop="details(item.id)" class="icon" aria-hidden="true">
                         <use xlink:href="#icon-androidgengduo"></use>
                     </svg>
                 </div>
@@ -136,7 +136,7 @@ li~li > div{
     overflow: hidden;
     text-overflow: ellipsis;
 }
-li~li > div~div > span,li > div > svg{
+li~li > div~div > span,svg{
     cursor: pointer;
 }
 li > div:nth-of-type(1){
@@ -155,7 +155,7 @@ li > div:nth-of-type(3){
 li > div:nth-of-type(4){
     flex-basis: 7%;
     text-align: center;
-    padding: 15px 15px 15px 10px;
+    padding: 15px 0;
 }
 .none{
     display: none;
