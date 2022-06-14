@@ -102,7 +102,8 @@ li span{
     width: 100%;
     padding: 10px 15px;
     transition: all 1s 1s;
-    background-color: #6160606e;
+    background-color: #6160603f;
+    color: white;
 }
 li:hover > div > div{
     left: 0%;
