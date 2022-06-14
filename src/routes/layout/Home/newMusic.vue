@@ -2,10 +2,10 @@
     <div>
         <div v-if="recommendNewMusicList.length">
             <h2>新音乐</h2>
-            <ul @click.once="$store.commit('song/idListMe',idList)">
-                <li :style="{backgroundImage:'url('+item.picUrl+')'}" v-for="item in recommendNewMusicList" :key="item.id">
+            <ul>
+                <li v-for="item in recommendNewMusicList" :key="item.id">
                     <img v-lazy="item.picUrl" :alt="item.name">
-                    <div>
+                    <div :style="{backgroundImage:'url('+item.picUrl+')'}">
                         <div class="singers" @click="playMe(item.id)">
                             <p>{{item.name}}</p>
                             <span> {{item.song.artists | songName}} - {{item.song.album.name}} </span>
@@ -34,7 +34,7 @@ export default {
     methods: {
         playMe(id){
             if(this.noPlayState){
-                this.$store.commit('song/idListMe',this.songArr.map(val=>val.id))
+                this.$store.commit('song/idListMe',this.idList)
                 this.noPlayState = false
             }
             this.$store.dispatch('song/clickPlayMe',id)
@@ -66,33 +66,29 @@ h2{
     letter-spacing: 20px;
 }
 ul{
-    box-sizing: border-box;
     padding: 5px 5%;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
 }
+ul,li div{
+    box-sizing: border-box;
+}
 li{
+    height: 60px;
     display: flex;
     flex-basis: 48%;
-    overflow: hidden;
     margin: 5px 0;
 }
-
 li img{
-    /* width: 60px; */
-    height: 60px;
+    height: 100%;
 }
 li > div{
-    box-sizing: border-box;
     flex-grow: 1;
-    line-height: 20px;
-    padding: 10px 15px;
     overflow: hidden;
-    text-shadow: 0 0 0 black;
-    color: transparent;
     position: relative;
 }
+
 li p{
     overflow: hidden;
     white-space: nowrap;
@@ -112,12 +108,14 @@ li span{
     height: 100%;
     width: 100%;
     padding: 10px 15px;
-    transition: all 1s 1s;
-    background-color: #6160603f;
+    overflow: hidden;
+    transition: all 0.5s 0.1s;
+    background-color: rgba(96, 96, 96, 0.5);
     color: white;
+    backdrop-filter: blur(6px);
 }
 li:hover > div > div{
     left: 0%;
-    transition: all 0.5s 0.2s;
+    transition: all 0.5s 0.3s;
 }
 </style>
