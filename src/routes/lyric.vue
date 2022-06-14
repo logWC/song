@@ -39,7 +39,8 @@ export default {
             currentTimeList:state=>state.song.currentTimeList,
             currentContentList:state=>state.song.currentContentList,
             map:state=>state.song.map,
-            order:state=>state.song.orderArr[state.song.orderNum]
+            order:state=>state.song.orderArr[state.song.orderNum],
+            url:state=>state.song.url
         })
     },
     watch:{
@@ -60,6 +61,7 @@ export default {
         this.audioEl.removeEventListener('timeupdate',this.timeUpdated)
     },
     activated() {
+        this.timeIndex=this.timeIndex>0?this.timeIndex-1:0
         setTimeout(() => {
             document.documentElement.scrollTop=0
         }, 0);
@@ -69,39 +71,56 @@ export default {
         const headrDiv = h('div',{
             class:['headr']
         },'未使用')
-        // 歌词及图片
-        // 图片
+
+        /* 歌词模块 */
+        // 图片img
         const picDiv = h('div',{
             class:['pic']
         },'这里放照片')
-        // 歌词
+
+        // p白痴数组
         const ps = function (length){
             return new Array(length).fill(1).map((val)=>h('p',null,''))
         }
+        // p歌词数组
         const lyricP = this.currentContentList.map(
             (val,index) => h('p',{class:{red:this.timeIndex==index+1},key:index},val)
         )
+        // 歌词div
         const lyricDiv = h('div',{
             class:['lyric'],
             ref:'lyric'
         },[ps(8),lyricP,ps(9)])
+        // 歌词模块
         const bodyrDiv = h('div',{
             class:['bodyr']
         },[picDiv,lyricDiv])
-        // 按钮
+        
+        /* 按钮 */
+        // 测试按钮
         const lastButton = h('button',{
             on:{
                 click: () => this.$store.dispatch('song/lastMe')
             }
         },'上一首')
+        // 按钮
         const testButton = h('button',{
             on:{
                 click:()=>this.test()
             }
         },'测试')
-        return h('div',{
-            class:['whole']
+
+
+        /* template毛玻璃 */
+        const glass = h('div',{
+            class:['wholeGlass']
         },[headrDiv,bodyrDiv,testButton,lastButton])
+
+        /* template */
+        return h('div',{
+            class:['whole'],
+            style:{backgroundImage:'url('+this.url+')'}
+        },[glass])
     },
 }
 </script>
@@ -109,19 +128,28 @@ export default {
 .whole{
     width: 800px;
     min-height: 900px;
-    background-color: rgb(127, 255, 144);
+    background-color: white;
+    position: relative;
+}
+.wholeGlass{
+    width: inherit;
+    height: inherit;
+    position: absolute;
+    top: 0;left: 0;right: 0;bottom: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(30px);
 }
 .headr{
     width: inherit;
     height: 60px;
-    background-color: rgb(221, 182, 7);
+    /* background-color: rgb(221, 182, 7); */
 }
 .bodyr{
     display: flex;
     flex-wrap: wrap;
     height: 540px;
     margin: 0 auto;
-    background-color: blueviolet;
+    /* background-color: blueviolet; */
 }
 .pic{
     flex-basis: 50%;
@@ -131,7 +159,7 @@ export default {
 .lyric{
     flex-basis: 50%;
     height: inherit;
-    background-color: aqua;
+    /* background-color: aqua; */
     font-family: Arial;
     font-size: 15px;
     overflow: auto;
