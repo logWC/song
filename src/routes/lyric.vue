@@ -135,6 +135,9 @@ export default {
     font-family: Arial;
     font-size: 15px;
     overflow: auto;
+    scroll-behavior: smooth;
+    transition: all 1s 0.5s ease-in;
+    -webkit-transition: all 1s 0.5s ease-in;
 }
 .lyric::-webkit-scrollbar{
     /* 隐藏滚动条 */
