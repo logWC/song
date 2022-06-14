@@ -2,12 +2,14 @@
     <div>
         <div v-if="recommendNewMusicList.length">
             <h2>新音乐</h2>
-            <ul class="recommendNewMusic" @click.once="$store.commit('song/idListMe',idList)">
-                <li @click="$store.dispatch('song/clickPlayMe',item.id)" v-for="item in recommendNewMusicList" :key="item.id">
+            <ul @click.once="$store.commit('song/idListMe',idList)">
+                <li :style="{backgroundImage:'url('+item.picUrl+')'}" v-for="item in recommendNewMusicList" :key="item.id">
                     <img v-lazy="item.picUrl" :alt="item.name">
                     <div>
-                        <p>{{item.name}}</p>
-                        <span> {{item.song.artists | songName}} - {{item.song.album.name}} </span>
+                        <div class="singers" @click="$store.dispatch('song/clickPlayMe',item.id)">
+                            <p>{{item.name}}</p>
+                            <span> {{item.song.artists | songName}} - {{item.song.album.name}} </span>
+                        </div>
                     </div>
                 </li>
             </ul>
@@ -52,39 +54,58 @@ h2{
     text-align: center;
     letter-spacing: 20px;
 }
-.recommendNewMusic{
+ul{
     box-sizing: border-box;
     padding: 5px 5%;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
 }
-.recommendNewMusic li{
+li{
     display: flex;
-    flex-basis: 32%;
+    flex-basis: 48%;
     overflow: hidden;
     margin: 5px 0;
 }
-.recommendNewMusic li img{
+
+li img{
     /* width: 60px; */
     height: 60px;
 }
-.recommendNewMusic > li > div{
+li > div{
     box-sizing: border-box;
     flex-grow: 1;
     line-height: 20px;
-    padding: 10px 0px 10px 10px;
+    padding: 10px 15px;
     overflow: hidden;
+    text-shadow: 0 0 0 black;
+    color: transparent;
+    position: relative;
 }
-.recommendNewMusic > li > div > p{
+li p{
     overflow: hidden;
     white-space: nowrap;
+    text-overflow: ellipsis;
 }
-.recommendNewMusic > li > div > span{
+li span{
     display: block;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     font-size: 9px;
+}
+.singers{
+    position: absolute;
+    left: 100%;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    padding: 10px 15px;
+    transition: all 1s 1s;
+    background-color: #6160606e;
+}
+li:hover > div > div{
+    left: 0%;
+    transition: all 0.5s 0.2s;
 }
 </style>
