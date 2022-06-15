@@ -5,17 +5,12 @@
                 <h2>定制推荐</h2>
             </div>
             <div class="tbody" :class="{'last-div':(recommendList.length)%3!=0}">
-                <router-link tag="div" v-for="item in recommendList" :to="{
-                    path:'/tjgdxq',
-                    query:{
-                        'id':item.id,
-                        'title':item.name,
-                        'name':item.creator.nickname
-                    }
-                }" :key="item.id">
-                    <img v-lazy="item.picUrl" alt="加载出错">
+                <div @click="clickMe(item.id,item.name,item.creator.nickname)" v-for="item in recommendList" :key="item.id">
+                    <div>
+                        <img v-lazy="item.picUrl" alt="加载出错">
+                    </div>
                     <span> {{item.name}} </span>
-                </router-link>
+                </div>
             </div>
         </div>
     </div>
@@ -29,6 +24,16 @@ export default {
         }
     },
     methods: {
+        clickMe(id,title,name){
+            this.$router.push({
+                path:'/tjgdxq',
+                query:{
+                    id,
+                    title,
+                    name
+                }
+            })
+        },
         obtainRecommendNewMusicList(){
             // 获取推荐歌单
             this.$api.recommend()
@@ -61,10 +66,21 @@ h2{
     text-align: center;
     margin: 10px 0;
 }
-.tbody > div > img{
+img{
+    display: block;
     width: 100%;
-    vertical-align: buttom;
     border-radius: 10px;
+}
+.tbody > div > div{
+    position: relative;
+}
+.tbody > div > div::before{
+    content: '';
+    position: absolute;
+    left: 0;top: 0;bottom: 0;right: 0;
+    border-radius: 10px;
+    background-color: rgba(128, 128, 128, 0.4);
+    mask-image: radial-gradient(farthest-corner at 40% 30%,transparent 30%, black 60%);
 }
 .tbody > div > span{
     text-align: left;
