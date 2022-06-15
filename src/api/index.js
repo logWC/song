@@ -49,7 +49,7 @@ export default {
     },
     // 推荐音乐（首）
     recommendNewMusic(){
-        return axios.get(`/api/personalized/newsong`)
+        return axios.get(`/api/personalized/newsong?time=${time()}`)
     },
     // 专辑
     album(id){
