@@ -40,5 +40,6 @@ export default {
   min-height: 900px;
   margin: 20px auto;
   background-color: rgb(222, 232, 240);
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 </style>
