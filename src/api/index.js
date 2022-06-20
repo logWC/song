@@ -7,9 +7,26 @@ export default {
     logon(phone,password){
         return axios.post(`/api/login/cellphone`,{
             phone,
-            password,
+            password
+        })
+    },
+    // 二维码登录：获取key
+    qrKey(){
+        return axios.post(`/api/login/qr/key`,{
             time:time()
         })
+    },
+    // 二维码登录：获取二维码
+    qrCreate(key){
+        return axios.post(`/api/login/qr/create`,{
+            key:key,
+            qrimg:key,
+            time:time()
+        })
+    },
+    // 二维码登录，检测扫码状态
+    qrCheck(key){
+        return axios.get(`/api/login/qr/check?key=${key}&time=${time()}`)
     },
     // 登录状态
     loginStatus(){
