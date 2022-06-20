@@ -7,8 +7,8 @@ const profiles = {
     namespaced:true,
     state:()=>({
         profile:null,
-        likeDataList:[],
-        likeIdList:[]
+        likeDataList:null,
+        likeIdList:null
     }),
     getters:{},
     actions:{
@@ -79,6 +79,7 @@ const song = {
         },
         /* 歌曲信息赋值 */
         play({dispatch,commit},id){
+            commit('clearAudio')
             /* id赋值 */
             commit('oneState',{key:'id',val:id})
             /* 获取歌曲src */
@@ -98,9 +99,7 @@ const song = {
                             commit('oneState',{key:'src',val:src})
                         })
                     }else{
-                        /* 清空：id、图片、音源、歌词 */
-                        commit('clearAudio')
-                        console.log('歌曲没找到播放源，可能是没有版权')
+                        alert('歌曲没找到播放源，可能是没有版权')
                     }
                 }else if(data.code==-462){
                     alert('请登录播放')
@@ -108,14 +107,12 @@ const song = {
             })
             .catch(error => {
                 alert('出错了，好像断网了呀！')
-                commit('clearAudio')
             })
         },
         /* 歌词数组赋值 */
         lyricMe({state,commit},id){
             this.$api.lyric(id)
             .then(({data})=>{
-                commit('clearAudio',false);
                 let lyric = data.lrc.lyric.split('\n');
                 let reg = /\[\d*:\d*(\.|:)\d*/g;
                 let currentTimeList = []
@@ -217,17 +214,11 @@ const song = {
     }
 }
 
+
+
 export default new Vuex.Store({
     modules: {
         profiles,
         song
     },
 })
-
-// window.addEventListener('beforeunload',()=>{
-//     sessionStorage.setItem('state',JSON.stringify(profile.state))
-// })
-// if(sessionStorage.getItem('state')){
-//     Object.assign(profile.state,JSON.parse(sessionStorage.getItem('state')))
-//     sessionStorage.removeItem('state')
-// }
