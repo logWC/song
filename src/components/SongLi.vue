@@ -130,7 +130,7 @@ li > div{
 }
 li~li > div{
     padding: 15px 15px 15px 4.5px;
-    font-size: 15px;
+    font-size: 14px;
     box-sizing: border-box;
     white-space: nowrap;
     overflow: hidden;
