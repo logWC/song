@@ -8,7 +8,7 @@ import store from './vuex/index'
 // 导入插件
 import installs from './use/index'
 // 导入字体符号
-import '@/assets/fonts/icon'
+import '@/assets/fonts/iconfont'
 Vue.use(installs,{'opt':'我就是opt'})
 
 Vue.config.productionTip = false
