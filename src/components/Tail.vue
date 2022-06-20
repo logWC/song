@@ -1,6 +1,5 @@
 <template>
     <div>
-        <hr />
         <div style="text-align:center">
         <a href="https://beian.miit.gov.cn" style="color:#939393" target="target">粤ICP备2021103978号</a>
         <br />
