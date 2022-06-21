@@ -1,5 +1,5 @@
 <template>
-    <div style="margin-top:10px">
+    <div class="rootDiv">
         <Nav />
         <keep-alive include="Home,Mine">
             <router-view></router-view>
@@ -16,5 +16,8 @@ export default {
 }
 </script>
 <style scoped>
-
+.rootDiv{
+    margin: 10px auto;
+    min-height: calc(88vh);
+}
 </style>
