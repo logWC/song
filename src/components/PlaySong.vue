@@ -17,6 +17,7 @@
                 :src="src">
                     对不起，你的浏览器不支持audio标签，请升级或更换浏览器进行播放
                 </audio>
+                <like-icon :id="id" />
                 <button @click="$store.dispatch('song/orderNumMe')">{{order}}</button>
                 <button @click="$store.dispatch('song/lastMe')">上一首</button>
                 <button v-if="suspendBoolean" @click="suspend">暂停</button>
@@ -27,9 +28,11 @@
     </div>
 </template>
 <script>
+import likeIcon from "@/components/like.vue";
 import { mapState } from 'vuex'
 export default {
     name:"PlaySong",
+    components:{likeIcon},
     data() {
         return {
             boole:false,
@@ -93,7 +96,7 @@ export default {
         /* 绑定元素 */
         elementMe(){
             this.audioEl = this.$refs.audio;
-        },
+        }
     },
     computed:{
         ...mapState({
@@ -145,7 +148,7 @@ export default {
     display: flex;
     height: 50px;
     box-shadow: 0px -1px 5px #333;
-    background-color: #333;
+    background-color: white;
 }
 .thead audio{
     flex-grow: 1;
