@@ -46,7 +46,7 @@ export default {
     },
     // 喜欢
     like(id,boole){
-        return axios.get(`/api/like?id=${id}&like=${boole}`)
+        return axios.get(`/api/like?id=${id}&like=${boole}&time=${time()}`)
     },
     // 推荐歌单
     recommend(){
