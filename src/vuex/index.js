@@ -14,23 +14,19 @@ const profiles = {
     actions:{
         /* 用户信息及喜欢列表 */
         userData({commit,dispatch},profile){
-            // commit('userData',profile)
             commit('oneState',{key:'profile',val:profile})
             dispatch('obtainLikeList',profile.userId)
         },
         /* 获用户喜欢歌曲 */
         async obtainLikeList({state,commit}){
-            // 数组：获取所有歌曲id
+            // 获取喜欢列表
             let likeIdList = await this.$api.likeList(state.profile.userId)
             .then(({data}) => data.ids)
-            /* 存储idList */
+            // 存idList
             commit('oneState',{key:'likeIdList',val:likeIdList})
-            // 数组：异步获取所有歌曲详情
-            let likeDataList = await this.$api.songDetail(state.likeIdList)
+            // 获取喜欢歌曲列表详情
+            let likeDataList = await this.$api.songDetail(likeIdList)
             .then(con=>con.data.songs)
-            // 数组：同步歌曲详情（排序）
-            likeDataList = state.likeIdList.map(id => likeDataList.find(val => val.id == id))
-            // commit('likeDataList',likeDataList)
             commit('oneState',{key:'likeDataList',val:likeDataList})
         },
         /* 清空用户数据 */
