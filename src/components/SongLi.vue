@@ -1,5 +1,5 @@
 <template>
-    <div @[hide]="hideMe" v-show="songArr.length!=0" class="body-div">
+    <div @[hide]="hideMe" v-if="songArr&&songArr.length!=0" class="body-div">
         <p style="font-weight:bold;font-size:18px">歌曲{{songArr.length}}</p>
         <!-- @click.once.capture="$store.commit('song/idListMe',songArr.map(val=>val.id))" -->
         <ul>
@@ -29,10 +29,8 @@
                     <span v-if="item.al">{{item.al.name}}</span>
                     <span v-if="item.album">{{item.album.name}}</span>
                 </div>
-                <div>
-                    <svg @click.stop="likeIconMe(item.id)" v-if="item.id==detailsIndex" class="icon" aria-hidden="true">
-                        <use :xlink:href="likeIcon"></use>
-                    </svg>
+                <div @click.stop>
+                    <like-icon :id="item.id" v-if="item.id==detailsIndex" />
                     <svg @click.stop="details(item.id)" class="icon" aria-hidden="true">
                         <use xlink:href="#icon-androidgengduo"></use>
                     </svg>
@@ -42,17 +40,17 @@
     </div>
 </template>
 <script>
+import likeIcon from "@/components/like.vue";
 import {songName} from '@/mixins/index.js'
-import { mapState } from 'vuex'
 export default {
     name:'SongLi',
     mixins:[songName],
+    components:{likeIcon},
     props:{songArr:Array},
     data() {
         return {
             detailsIndex:-1,
             hide:null,
-            likeIcon:'#icon-aixinD',
             noPlayState:true
         }
     },
@@ -65,45 +63,13 @@ export default {
             this.$store.dispatch('song/clickPlayMe',id)
         },
         details(id){
-            this.likeIcon = this.likeIdList.includes(id)
-            ?'#icon-aixinshoucang'
-            :'#icon-aixinD';
             this.detailsIndex = id
             this.hide = 'click'
         },
         hideMe(){
             this.detailsIndex = -1
             this.hide = null
-        },
-        async likeIconMe(id){
-            let boolean = await this.$api.like(id,this.likeIcon=='#icon-aixinD')
-            .then(val=>true)
-            .catch(error=>{
-                error.toString().includes(500)
-                ?alert('没有版权，喜欢失败')
-                :alert('未知错误，喜欢失败')
-                return false
-            })
-            if(boolean){
-                this.$store.dispatch('profiles/obtainLikeList')
-                this.likeIcon = this.likeIcon=='#icon-aixinD'
-                ?'#icon-aixinshoucang'
-                :'#icon-aixinD'
-            }
         }
-    },
-    computed:{
-        ...mapState({
-            likeIdList:state=>state.profiles.likeIdList
-        })
-    },
-    watch:{
-        // songArr:{
-        //     handler(val){
-        //         console.log(val)
-        //     },
-        //     immediate:true
-        // }
     }
 }
 </script>
