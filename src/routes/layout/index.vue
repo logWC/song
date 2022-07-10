@@ -20,10 +20,11 @@ export default {
     min-height: calc(88vh);
     min-width: 400px;
     max-width: 800px;
-    margin: 20px auto;
-    border-radius: 3px;
+    margin: 0px auto 20px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
     overflow: hidden;
     background-color: rgb(222, 232, 240);
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    box-shadow: 1px 3px 3px rgba(0, 0, 0, 0.212);
 }
 </style>

@@ -17,7 +17,7 @@ export default {
 }
 a{
     flex-grow: 1;
-    color: rgb(78, 106, 131);;
+    color: rgb(78, 106, 131);
     text-align: center;
     line-height: 30px;
     background-color: rgb(78, 106, 131);
