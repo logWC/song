@@ -23,7 +23,7 @@
                 </div>
                 <div>
                     <span v-if="item.ar"> {{item.ar | songName}} </span>
-                    <span v-if="item.artists"> {{item.artists | songName}} - {{item.album.name}} </span>
+                    <span v-if="item.artists"> {{item.artists | songName}}</span>
                 </div>
                 <div>
                     <span v-if="item.al">{{item.al.name}}</span>
