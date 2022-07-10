@@ -1,11 +1,15 @@
 <template>
     <div>
-        1
+        {{lastModified}}
     </div>
 </template>
 <script>
 export default {
-    
+    data() {
+        return {
+            lastTime:document.lastModified
+        }
+    },
 }
 </script>
 <style>
