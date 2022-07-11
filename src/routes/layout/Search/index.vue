@@ -161,6 +161,9 @@ export default {
     top: 40px;
     z-index: 1;
 }
+.proposal > li:hover{
+    background-color: aliceblue;
+}
 .history{
     box-sizing: border-box;
     height: 30px;
