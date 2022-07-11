@@ -3,17 +3,19 @@
         <div>
             <!-- 搜索框 -->
             <div class="search">
-                <input ref="inpu" type="text" @blur="blur" @click.stop @focus="focus" @keyup="throttle(searchContent,$event)" @keyup.enter="clickSearch(searchContent)" v-model.trim="searchContent" />
-                <button @click="clickSearch(searchContent)">搜索</button>
+                <div>
+                    <input ref="inpu" type="text" @blur="blur" @click.stop @focus="focus" @keyup="throttle(searchContent,$event)" @keyup.enter="clickSearch(searchContent)" v-model.trim="searchContent" />
+                    <button @click="clickSearch(searchContent)">搜索</button>
+                </div>
                 <ul v-show="proposalBoole" @mouseleave="mouseLeave" @mouseenter="mouseEnter" class="proposal">
                     <!-- 搜索建议 -->
-                    <li @click.prevent="clickSearch(item.name)" v-for="item in proposalList" :key="item.id">
+                    <li @click.prevent="clickSearch(item.name)" v-for="item in proposalArr" :key="item.id">
                         {{item.name}}
                     </li>
                 </ul>
             </div>
             <!-- 历史记录 -->
-            <div class="history" v-if="!searchContent || proposalList==[]">
+            <div class="history" v-if="!searchContent || proposalArr==[]">
                 <span>历史</span>
                 <div>
                     <div>
@@ -115,6 +117,11 @@ export default {
             }
         }
     },
+    computed:{
+        proposalArr(){
+            return this.searchContent?this.proposalList:[]
+        }
+    },
     created() {
         this.getHistoryList()
     }
@@ -124,26 +131,24 @@ export default {
 .search{
     box-sizing: border-box;
     height: 40px;
-    margin: 5% auto 2%;
+    margin: 5% 13px 2%;
     position: relative;
 }
+.search > div{
+    display: flex;
+    height: 40px;
+    border-radius: 3px;
+    overflow: hidden;
+}
 .search input{
-    box-sizing: border-box;
-    width: 80%;
-    height: inherit;
+    width: 78%;
     padding: 0 10px;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
     background-color: rgb(152, 169, 184);
 }
 .search button{
-    width: 20%;
-    height: inherit;
+    flex: auto;
     padding: 0;
     border: none;
-    vertical-align: middle;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
     background-color: rgb(78, 106, 131);
 }
 .search button:hover{
