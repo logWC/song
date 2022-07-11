@@ -18,9 +18,6 @@ export default {
 <style scoped>
 .rootDiv{
     min-height: calc(88vh);
-    min-width: 400px;
-    max-width: 800px;
-    margin: 0px auto 20px;
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
     overflow: hidden;

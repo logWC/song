@@ -2,7 +2,7 @@
   <div>
     <head-r />
     <keep-alive include="Layout,lyrics">
-      <router-view></router-view>
+      <router-view class="view"></router-view>
     </keep-alive>
     <PlaySong v-if="$router.history.current.path!='/'" />
     <Tail />
@@ -37,4 +37,9 @@ export default {
 </script>
 
 <style scoped>
+  .view{
+    margin: 0px auto 20px;
+    min-width: 400px;
+    max-width: 800px;
+  }
 </style>
