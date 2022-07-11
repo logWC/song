@@ -1,10 +1,8 @@
 <template>
-    <div>
-        <div v-cloak>
-            <h3>
-                最后修改：{{lastTime[2]}}-{{lastTime[0]}}-{{lastTime[1]}}
-            </h3>
-        </div>
+    <div v-cloak>
+        <h3>
+            文档最后修改于{{lastTime[2]}}年{{lastTime[0]}}月{{lastTime[1]}}日
+        </h3>
     </div>
 </template>
 <script>
@@ -19,7 +17,7 @@ export default {
 </script>
 <style scoped>
     div{
-        background-color: rgb(78, 106, 131);
+        background-color: rgba(128, 128, 128, 0.1);
         padding: 13px 9px;
     }
 </style>
