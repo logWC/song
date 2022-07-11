@@ -39,7 +39,6 @@ export default {
 <style scoped>
   .view{
     margin: 0px auto 20px;
-    min-width: 400px;
-    max-width: 800px;
+    width: 800px;
   }
 </style>
