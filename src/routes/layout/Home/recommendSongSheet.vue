@@ -97,8 +97,8 @@ img{
     backdrop-filter: brightness(106%);
 }
 .title{
-    line-height: 1.5em;
-    max-height: 3em;
+    padding-top: 5px;
+    font-size: 15px;
     overflow: hidden;
     display: -webkit-box;
     white-space: normal;
