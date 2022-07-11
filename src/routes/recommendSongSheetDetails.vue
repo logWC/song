@@ -50,18 +50,6 @@ img{
     width: 100px;
     height: 100px;
 }
-ul{
-    margin: 30px 15px 0px;
-}
-li{
-    padding: 5px;
-}
-li span:first-of-type{
-    display: block;
-}
-li span:last-of-type{
-    font-size: 10px;
-}
 .head-div{
     display: flex;
     height: 100px;
@@ -86,8 +74,5 @@ li span:last-of-type{
 }
 .head-div > div p{
     -webkit-line-clamp: 1;
-}
-.body-div{
-    margin-top: 20px;
 }
 </style>
