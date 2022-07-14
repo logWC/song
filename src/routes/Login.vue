@@ -2,24 +2,38 @@
     <div class="signIn" v-if="signIn">
         <div class="user">
             <h3>网易云登录</h3>
-            <div v-if="loginBoolean">
+            <div v-if="loginBoolean==0">
                 <div>
-                    <input @keyup.enter="removeFocus" @focus="error=false" type="text" v-model="phone" placeholder="手机号" />
-                    <input ref="password" @keyup.enter="logon" @focus="error=false" type="password" v-model="password" placeholder="密码" />
+                    <input @keyup.enter="removeFocus" @focus="error=false" type="text" v-model.number="phone" placeholder="手机号" />
+                    <input ref="password" @keyup.enter="logon" @focus="error=false" type="password" v-model.number="password" placeholder="密码" />
                     <span class="error" v-if="error">手机号或密码错误，请重新输入</span>
 
                     <button @click="logon">登录</button>
                 </div>
-                <div style="text-align:right">
-                    <span @click="qr" style="font-size:10px;padding:5px">二维码登录</span>
+                <div style="display:flex;justify-content:space-between;center;font-size:10px;padding:5px">
+                    <span @click="qr">二维码登录</span>
+                    <span @click="pa(2)">验证码登录</span>
+                </div>
+            </div>
+            <div v-else-if="loginBoolean==1">
+                <div>
+                    <img :src="loginImg" alt="加载出错" />
+                </div>
+                <div style="display:flex;justify-content:space-between;center;font-size:10px;padding:5px">
+                    <span @click="pa(0)">密码登录</span>
+                    <span @click="pa(2)">验证码登录</span>
                 </div>
             </div>
             <div v-else>
                 <div>
-                    <img :src="loginImg" alt="加载出错" />
+                    <input type="text" v-model.number="phone" placeholder="手机号码" />
+                    <input type="text" v-model.number="captcha" placeholder="验证码" />
+                    <button @click="vcMe">获取验证码</button>
+                    <button @click="verify">登录</button>
                 </div>
-                <div style="text-align:right">
-                    <span @click="pa" style="font-size:10px;padding:5px">密码登录</span>
+                <div style="display:flex;justify-content:space-between;center;font-size:10px;padding:5px">
+                    <span @click="qr">二维码登录</span>
+                    <span @click="pa(0)">密码登录</span>
                 </div>
             </div>
         </div>
@@ -33,9 +47,10 @@ export default {
         return {
             phone:null,
             password:null,
+            captcha:null,
             signIn:false,
             error:false,
-            loginBoolean:true,
+            loginBoolean:0,
             loginKey:'',
             loginImg:null,
             timeout:null
@@ -47,7 +62,7 @@ export default {
         },
         logon(){
             /* 登录 */
-            this.$api.logon(this.phone,this.password)
+            this.$api.logon(this.phone,this.password,this.captcha)
             .then(({data}) => {
                 this.$store.dispatch('profiles/userData',data.profile)
                 this.$router.replace('/layout/home')
@@ -56,14 +71,15 @@ export default {
         },
         async qr(){
             if(!this.loginKey){
-                console.log('获取二维码')
                 this.loginKey = await this.$api.qrKey()
                 .then(content=>content.data.data.unikey)
                 this.loginImg = await this.$api.qrCreate(this.loginKey)
                 .then(content=>content.data.data.qrimg)
+                console.log('获取二维码')
             }
-            this.loginBoolean = false
+            this.loginBoolean = 1
             const loginCheck = ()=>{
+                console.log('检测二维码')
                 this.$api.qrCheck(this.loginKey)
                 .then(({data})=>{
                     if(data.code==803){
@@ -71,23 +87,24 @@ export default {
                     }
                     else if(data.code==802 || data.code==801){
                         console.log('等待跳转 || 等待扫码')
-                        if(!this.loginBoolean){
+                        if(this.loginBoolean == 1){
                             clearTimeout(this.timeout)
                             this.timeout = setTimeout(loginCheck,2000)
                         }
                     }
                     else if(data.code==800){
                         console.log('二维码过期了')
-                        this.loginKey = ''
-                        !this.loginBoolean&&this.qr()
+                        this.loginKey = null
+                        this.loginBoolean==1&&this.qr()
                     }
                 })
+                // .catch(error=>loginCheck())
             }
             loginCheck()
         },
-        async pa(){
+        async pa(a){
             clearTimeout(this.timeout)
-            this.loginBoolean = true;
+            this.loginBoolean = a;
         },
         loginStatus(){
             if(!this.$store.state.profiles.profile){
@@ -105,6 +122,23 @@ export default {
             }else{
                 this.$router.replace('/layout/home')
             }
+        },
+        vcMe(){
+            //定义正则表达式
+            var reg='^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-9])|(18[0-9])|166|198|199|191|(147))\\d{8}$';
+            //创建正则表达式对象
+            var regExp=new RegExp(reg);
+            //使用test()函数验证数据是否匹配正则表达式，匹配返回true,否则返回false
+            if(regExp.test(this.phone)){
+                this.$api.getCaptcha(this.phone)
+                .then(({data})=>{console.log(data)})
+            }else{
+                console.log('请输入正确的手机号')
+            }
+        },
+        verify(){
+            this.$api.captchaVerify(this.phone,this.captcha)
+            .then(val=>console.log(val))
         }
     },
     created() {

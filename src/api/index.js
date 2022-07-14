@@ -1,32 +1,38 @@
 import axios from 'axios'
 function time(){
-    return new Date().getTime()
+    return Math.random()
 }
 export default {
     // 登录http://iwenwiki.com:3000
-    logon(phone,password){
-        return axios.post(`/api/login/cellphone`,{
-            phone,
-            password
+    // http://xq.svger.cn
+    logon(phone,password,captcha){
+        return axios.get(`/api/login/cellphone?phone=${phone}&password=${password}${captcha?'&'+captcha+'&':'&'}time=${time()}`)
+    },
+    // 获取验证码
+    getCaptcha(phone){
+        return axios.post(`/api/captcha/sent`,{
+            phone
         })
+    },
+    // 验证验证码
+    captchaVerify(phone,captcha){
+        return axios.get(`/api/captcha/verify?phone=${phone}&captcha=${captcha}`)
     },
     // 二维码登录：获取key
     qrKey(){
-        return axios.post(`/api/login/qr/key`,{
-            time:time()
-        })
+        return axios.post(`/api/login/qr/key`)
     },
     // 二维码登录：获取二维码
     qrCreate(key){
         return axios.post(`/api/login/qr/create`,{
             key:key,
-            qrimg:key,
+            qrimg:true,
             time:time()
         })
     },
     // 二维码登录，检测扫码状态
     qrCheck(key){
-        return axios.get(`/api/login/qr/check?key=${key}&time=${time()}`)
+        return axios({url:`/api/login/qr/check?key=${key}&time=${time()}`})
     },
     // 登录状态
     loginStatus(){
