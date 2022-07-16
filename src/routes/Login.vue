@@ -138,7 +138,7 @@ export default {
         },
         verify(){
             this.$api.captchaVerify(this.phone,this.captcha)
-            .then(val=>console.log(val))
+            .then(({data})=>data.code==200&&this.logon())
         }
     },
     created() {
@@ -152,10 +152,8 @@ export default {
 </script>
 <style scoped>
 .signIn{
-    max-width: 700px;
     height: calc(85vh);
     margin: 2% auto;
-    border-top-right-radius: 20%;
     background-color: transparent;
     backdrop-filter: blur(20px);
     overflow: auto;
