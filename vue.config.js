@@ -11,7 +11,7 @@ module.exports = {
   devServer:{
     proxy:{
       '/api':{
-        target:'http://xq.svger.cn',
+        target:'http://music.wclili.vip',
         changeOrigin:true,
         pathRewrite:{
           "^/api":""
