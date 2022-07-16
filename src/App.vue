@@ -22,11 +22,7 @@ export default {
     loginStatus(){
       this.$api.loginStatus()
       .then(({data})=>this.$store.dispatch('profiles/userData', data.data.profile))
-      .catch(error=>{
-        if(error.toString().includes('400')){
-          console.log('未登录')
-        }
-      })
+      .catch(error=>console.log(error.toString().includes('400') ? '未登录' : error))
     }
   },
   created() {
