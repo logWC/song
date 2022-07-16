@@ -15,6 +15,7 @@ export default {
     },
     methods:{
         likeMe(){
+            if(!this.likeIdList)return
             this.$api.like(this.id,this.icon=='#icon-aixinD')
             .then(val=>{
                 this.$store.dispatch('profiles/obtainLikeList');
@@ -27,7 +28,7 @@ export default {
             })
         },
         getSee(){
-            if(this.id){
+            if(this.id && this.likeIdList){
                 this.icon = this.likeIdList.includes(this.id)
                 ?'#icon-aixinshoucang'
                 :'#icon-aixinD';
