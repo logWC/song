@@ -1,10 +1,17 @@
 import axios from 'axios'
+
+const myInterceptors = axios.interceptors.request.use(function (config){
+    console.log(config.url)
+    return config
+}, function(error){
+    console.log('出错了')
+    return Promise.reject(error)
+})
+
 function time(){
     return Math.random()
 }
 export default {
-    // 登录http://iwenwiki.com:3000
-    // http://xq.svger.cn
     logon(phone,password,captcha){
         return axios.get(`/api/login/cellphone?phone=${phone}&password=${password}${captcha?'&'+captcha+'&':'&'}time=${time()}`)
     },
@@ -48,6 +55,7 @@ export default {
     },
     // 喜欢列表
     likeList(id){
+        axios.interceptors.request.eject(myInterceptors)
         return axios.get(`/api/likelist?uid=${id}&time=${time()}`)
     },
     // 喜欢
