@@ -1,20 +1,18 @@
 <template>
-    <div>
         <div class="bodyr"
         :class="{whole1:boole,whole2:!boole}"
         @[mouseleave]="wearOut(2000)"
         @[mouseenter]="penetrate">
             <div style="background-color:transparent;height:20px"> </div>
             <div class="thead">
-                <img @click="lyricClick" @error="require('@/assets/logo.png')" :src="url" alt="加载出错啦" />
+                <img @click="lyricClick" @error="require('@/assets/logo.png')" :src="url" alt="#" />
                 <audio 
                 @error="error"
                 @play="suspendBoolean=true"
                 @pause="suspendBoolean=false"
                 @ended="ended"
                 ref="audio"
-                controls="controls"
-                :src="src">
+                controls="controls">
                     对不起，你的浏览器不支持audio标签，请升级或更换浏览器进行播放
                 </audio>
                 <like-icon :id="id" />
@@ -25,7 +23,6 @@
                 <button @click="$store.dispatch('song/nextMe')">下一首</button>
             </div>
         </div>
-    </div>
 </template>
 <script>
 import likeIcon from "@/components/like.vue";
@@ -41,7 +38,7 @@ export default {
             audioEl:null,
             int:null,
             mouseenter:'mouseenter',
-            mouseleave:'mouseleave'
+            mouseleave:'mouseleave',
         }
     },
     methods: {
@@ -72,7 +69,7 @@ export default {
             this.order=='正在单曲循环'
             ?this.$store.dispatch('song/play',this.id)
             :this.$store.dispatch('song/nextMe')
-            this.suspendBoolean = true
+            // this.suspendBoolean = true
         },
         /* 跳转至歌词路由 */
         lyricClick(){
@@ -96,7 +93,7 @@ export default {
         /* 绑定元素 */
         elementMe(){
             this.audioEl = this.$refs.audio;
-        }
+        },
     },
     computed:{
         ...mapState({
@@ -108,13 +105,16 @@ export default {
     },
     watch:{
         src(val){
+            // 加载状态
+            this.suspendBoolean = false;
+            this.audioEl.src = val
             if(val){
                 this.int = setInterval(()=>{
                     if(this.audioEl.readyState==4){
                         clearInterval(this.int);
                         this.play()
                     }
-                },1000)
+                },500)
             }else{
                 this.audioEl.load()
             }
@@ -160,7 +160,7 @@ export default {
     border: none;
 }
 .thead img{
-    /* width: 50px; */
+    width: 50px;
     height: 50px;
 }
 .whole1{
