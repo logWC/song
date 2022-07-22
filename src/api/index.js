@@ -13,7 +13,7 @@ function time(){
 }
 export default {
     logon(phone,password,captcha){
-        return axios.get(`/api/login/cellphone?phone=${phone}&password=${password}${captcha?'&'+captcha+'&':'&'}time=${time()}`)
+        return axios.get(`/api/login/cellphone?phone=${phone}&password=${password}${captcha?'&captcha='+captcha+'&':'&'}time=${time()}`)
     },
     // 获取验证码
     getCaptcha(phone){
