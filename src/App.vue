@@ -21,7 +21,7 @@ export default {
   methods: {
     loginStatus(){
       this.$api.loginStatus()
-      .then(({data})=>this.$store.dispatch('profiles/userData', data.data.profile))
+      .then(({data})=>data.data.profile.userId!==7943082392&&this.$store.dispatch('profiles/userData', data.data.profile))
       .catch(error=>console.log(error.toString().includes('400') ? '未登录' : error))
     }
   },
