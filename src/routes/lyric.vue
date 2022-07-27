@@ -129,6 +129,7 @@ export default {
     width: 800px;
     min-height: 900px;
     background-color: white;
+    background-position: center;
     position: relative;
 }
 .wholeGlass{
@@ -137,8 +138,7 @@ export default {
     position: absolute;
     top: 0;left: 0;right: 0;bottom: 0;
     background-color: rgba(128, 128, 128, 0.5);
-    backdrop-filter: blur(20px);
-
+    backdrop-filter: blur(10px);
 }
 .headr{
     width: inherit;
