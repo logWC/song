@@ -1,5 +1,5 @@
 <template>
-    <span @click="pa(num)" v-cloak>
+    <span v-cloak>
         {{str}}
     </span>
 </template>
@@ -7,9 +7,7 @@
 export default {
     name:'loginPa',
     props:{
-        str:String,
-        num:String,
-        pa:Function
+        str:String
     }
 }
 </script>

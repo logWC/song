@@ -1,5 +1,5 @@
 <template>
-    <span @click="qr">
+    <span>
         <svg class="icon" aria-hidden="true">
             <use xlink:href="#icon-erweima"></use>
         </svg>
@@ -7,10 +7,7 @@
 </template>
 <script>
 export default {
-    name:'loginQr',
-    props:{
-        qr:Function
-    }
+    name:'loginQr'
 }
 </script>
 <style scoped>
