@@ -1,7 +1,6 @@
 <template>
-    <div @[hide]="hideMe" v-if="songArr&&songArr.length!=0" class="body-div">
-        <p style="font-weight:bold;font-size:18px">歌曲{{songArr.length}}</p>
-        <!-- @click.once.capture="$store.commit('song/idListMe',songArr.map(val=>val.id))" -->
+    <div @[hide]="detailsChange" v-show="songArr.length!=0" class="body-div">
+        <p style="font-weight:bold;font-size:16px">歌曲{{songArr.length}}</p>
         <ul>
             <li>
                 <div>
@@ -17,7 +16,7 @@
                     <span>详情</span>
                 </div>
             </li>
-            <li v-for="item in songArr" :key="item.id">
+            <li v-for="item in showcasedPlaylist" :key="item.id">
                 <div @click="playMe(item.id)">
                     <span>{{item.name}}</span>
                 </div>
@@ -31,16 +30,17 @@
                 </div>
                 <div @click.stop>
                     <like-icon :id="item.id" v-if="item.id==detailsIndex" />
-                    <svg @click.stop="details(item.id)" class="icon" aria-hidden="true">
+                    <svg @click.stop="detailsChange(item.id)" class="icon" aria-hidden="true">
                         <use xlink:href="#icon-androidgengduo"></use>
                     </svg>
                 </div>
             </li>
         </ul>
+        <div ref="touchbottom"></div>
     </div>
 </template>
 <script>
-import likeIcon from "@/components/like.vue";
+import likeIcon from "@/components/likeIcon.vue";
 import {songName} from '@/mixins/index.js'
 export default {
     name:'SongLi',
@@ -51,7 +51,8 @@ export default {
         return {
             detailsIndex:-1,
             hide:null,
-            noPlayState:true
+            noPlayState:true,
+            num:null
         }
     },
     methods: {
@@ -62,14 +63,36 @@ export default {
             }
             this.$store.dispatch('song/clickPlayMe',id)
         },
-        details(id){
-            this.detailsIndex = id
-            this.hide = 'click'
+        detailsChange(id=false){
+            this.detailsIndex = id || -1;
+            this.hide = id?'click':null;
         },
-        hideMe(){
-            this.detailsIndex = -1
-            this.hide = null
+        /* open io */
+        openIo(){
+            this.io = new IntersectionObserver(entries=>entries[0].isIntersecting&&this.getAllSong());
+            this.io.observe(this.$refs.touchbottom);
+        },
+        /* io observe */
+        getAllSong(){
+            console.log('触底了')
+            let startIndex = this.showcasedPlaylist.length;
+            let maxIndex = this.songArr.length;
+            if(startIndex+49<maxIndex){
+                this.num = startIndex+50
+            }else if(startIndex<maxIndex){
+                this.num = maxIndex
+            }else{
+                return
+            }
         }
+    },
+    computed:{
+        showcasedPlaylist(){
+            return this.songArr.slice(0,this.num || 20)
+        }
+    },
+    mounted() {
+        this.openIo()
     }
 }
 </script>
