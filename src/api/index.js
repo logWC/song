@@ -55,7 +55,7 @@ export default {
     },
     // 喜欢列表
     likeList(id){
-        axios.interceptors.request.eject(myInterceptors)
+        // axios.interceptors.request.eject(myInterceptors)
         return axios.get(`/api/likelist?uid=${id}&time=${time()}`)
     },
     // 喜欢
@@ -73,6 +73,10 @@ export default {
                 id
             }
         })
+    },
+    // 获取歌单所有歌曲
+    playlistTrackAll(id){
+        return axios.get(`/api/playlist/track/all?id=${id}`)
     },
     // 向歌单添加歌曲
     addSongdelSong(change,pid,id){
