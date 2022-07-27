@@ -1,8 +1,8 @@
 <template>
-    <div v-if="imageSrc">
-        <h3>歌单详情(默认20首)</h3>
+    <div>
+        <h3>歌单详情</h3>
         <div class="head-div">
-            <img :src="imageSrc" alt="加载出错" />
+            <img :src="$route.query.src" alt="加载出错" />
             <div>
                 <h4>{{$route.query.title}}</h4>
                 <p>歌单创作者: {{$route.query.name}}</p>
@@ -19,25 +19,27 @@ export default {
     data() {
         return {
             songArr:[],
+            allSongId:[],
             imageSrc:null,
+            io:null
         }
     },
     methods: {
         getSongIdList(){
-            // 获取歌单的所有歌曲
-            this.$api.songListDetails(this.$route.query.id)
-            .then(
-                ({data}) => {
-                    this.songArr = data.playlist.tracks
-                    this.imageSrc = data.playlist.coverImgUrl
-                    document.documentElement.scrollTop=0
-                }
-            )
-            .catch(error => alert(`获取歌曲失败: ${error}`))
-        }
+            // get playlist of all song
+            this.$api.playlistTrackAll(this.$route.query.id)
+            .then(({data})=>this.songArr = data.songs)
+            .catch(error=>console.log(error))
+        },
+        
     },
     created() {
         this.getSongIdList()
+    },
+    mounted() {
+    },
+    beforeDestroy(){
+        // this.io.disconnect();
     }
 }
 </script>
