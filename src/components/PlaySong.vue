@@ -25,7 +25,7 @@
         </div>
 </template>
 <script>
-import likeIcon from "@/components/like.vue";
+import likeIcon from "@/components/likeIcon.vue";
 import { mapState } from 'vuex'
 export default {
     name:"PlaySong",
@@ -44,6 +44,7 @@ export default {
     methods: {
         // src失效
         error(){
+            if(this.src==null)return
             this.$api.checkMusic(this.id)
             .then(
                 ({data})=>{
