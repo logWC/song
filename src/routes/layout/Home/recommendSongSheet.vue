@@ -10,7 +10,7 @@
         </div>
         <div class="tbody">
             <div class="tshow" v-for="item in recommendNumList" :key="item.id">
-                <div class="show" @click="clickMe(item.id,item.name,item.creator.nickname)">
+                <div class="show" @click="clickMe(item.id,item.name,item.creator.nickname,item.picUrl)">
                     <img v-lazy="item.picUrl" alt="加载出错">
                 </div>
                 <div class="title"> {{item.name}} </div>
@@ -36,13 +36,14 @@ export default {
         }
     },
     methods: {
-        clickMe(id,title,name){
+        clickMe(id,title,name,src){
             this.$router.push({
                 path:'/tjgdxq',
                 query:{
                     id,
                     title,
-                    name
+                    name,
+                    src
                 }
             })
         },
