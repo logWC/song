@@ -1,13 +1,6 @@
 <template>
-    <div style="padding:20px 5% 0;" v-if="recommendList.length">
-        <div>
-            <h4 style="
-            font-weight:bold;
-            font-size:16px;
-            letter-spacing:3px;
-            border-bottom:1px solid red;
-            padding-bottom:3px;">定制推荐</h4>
-        </div>
+    <div style="padding:15px 5%;" v-if="recommendList.length">
+        <left-title str="定制推荐" />
         <div class="tbody">
             <div class="tshow" v-for="item in recommendNumList" :key="item.id">
                 <div class="show" @click="clickMe(item.id,item.name,item.creator.nickname,item.picUrl)">
@@ -27,7 +20,9 @@
     </div>
 </template>
 <script>
+import leftTitle from '@/components/leftTitle.vue'
 export default {
+    components: { leftTitle },
     name:'recommendSongSheet',
     data() {
         return {
@@ -73,7 +68,6 @@ img{
     height: 100%;
 }
 .tbody{
-    box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
 }

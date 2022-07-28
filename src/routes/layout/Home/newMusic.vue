@@ -1,11 +1,10 @@
 <template>
-    <div>
+    <div style="padding:0px 5%">
         <div v-if="recommendNewMusicList.length">
-            <h2>新音乐</h2>
+            <left-title str='新音乐' />
             <ul>
                 <li v-for="item in recommendNewMusicList" :key="item.id">
-                    <img v-lazy="item.picUrl" :alt="item.name">
-                    <div :style="{backgroundImage:'url('+item.picUrl+')'}">
+                    <div :style="{background:'url('+item.picUrl+') center'}">
                         <div class="singers" @click="playMe(item.id)">
                             <p>{{item.name}}</p>
                             <span> {{item.song.artists | songName}} - {{item.song.album.name}} </span>
@@ -19,7 +18,9 @@
 </template>
 <script>
 import {songName} from '@/mixins/index.js'
+import leftTitle from '@/components/leftTitle.vue'
 export default {
+  components: { leftTitle },
     name:'newMusic',
     mixins:[songName],
     data() {
@@ -58,21 +59,11 @@ export default {
 }
 </script>
 <style scoped>
-h2{
-    font-size: 1.5em;
-    font-weight: bold;
-    margin: 20px 0 10px;
-    text-align: center;
-    letter-spacing: 20px;
-}
 ul{
-    padding: 5px 5%;
+    padding: 5px 20px;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-}
-ul,li div{
-    box-sizing: border-box;
 }
 li{
     height: 60px;
