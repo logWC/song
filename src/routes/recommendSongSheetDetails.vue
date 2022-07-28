@@ -18,10 +18,7 @@ export default {
     components:{SongLi},
     data() {
         return {
-            songArr:[],
-            allSongId:[],
-            imageSrc:null,
-            io:null
+            songArr:[]
         }
     },
     methods: {
@@ -35,11 +32,6 @@ export default {
     },
     created() {
         this.getSongIdList()
-    },
-    mounted() {
-    },
-    beforeDestroy(){
-        // this.io.disconnect();
     }
 }
 </script>
