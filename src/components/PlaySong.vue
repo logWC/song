@@ -15,7 +15,9 @@
                 controls="controls">
                     对不起，你的浏览器不支持audio标签，请升级或更换浏览器进行播放
                 </audio>
-                <like-icon :id="id" />
+                <button>
+                    <like-icon :id="id" />
+                </button>
                 <button @click="$store.dispatch('song/orderNumMe')">{{order}}</button>
                 <button @click="$store.dispatch('song/lastMe')">上一首</button>
                 <button v-if="suspendBoolean" @click="suspend">暂停</button>
