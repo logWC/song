@@ -12,6 +12,7 @@
                             <button style="flex-grow:1;height:25px;margin-right:10px;font-size:10px;border: 1px solid rgba(0, 0, 0, 0.1);background-color:inherit" @click="vcMe">获取验证码</button>
                         </div>
                     </div>
+                    <button v-if="loginBoolean!=3" @click="verify">登录</button>
                 </div>
                 <div class="switch-button">
                     <login-qr v-if="loginBoolean!=3" @click.native='qr' />
@@ -83,7 +84,7 @@ export default {
             }
             loginCheck()
         },
-        async pa(a){
+        pa(a){
             clearTimeout(this.timeout)
             this.loginBoolean = a;
             this.error = ''
@@ -125,9 +126,13 @@ export default {
         },
         /* 验证验证码 */
         verify(){
-            this.$api.captchaVerify(this.phone,this.captcha)
-            .then(({data})=>data.code==200&&this.logon())
-            .catch(error=>this.error = '验证码出错')
+            if(this.loginBoolean==2){
+                this.$api.captchaVerify(this.phone,this.captcha)
+                .then(({data})=>data.code==200&&this.logon())
+                .catch(error=>this.error = '验证码出错')
+            }else{
+                this.logon()
+            }
         }
     },
     created() {
@@ -192,17 +197,17 @@ input{
     align-content:space-between;
     justify-content:center;
 }
-.switch-button{
-    height: 40px;
-    display:flex;
-    justify-content:space-between;
-    align-items: center;
-}
 .switch-login > button{
     margin-top: 6%;
     padding: 5px 30px;
     border: 1px solid rgba(0, 0, 0, 0.644);
     background-color: inherit;
+}
+.switch-button{
+    height: 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items: center;
 }
 .tourist{
     position:absolute;
