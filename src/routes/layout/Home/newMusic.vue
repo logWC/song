@@ -1,19 +1,31 @@
 <template>
     <div style="padding:0px 5%">
-        <div v-if="recommendNewMusicList.length">
-            <left-title str='新音乐' />
-            <ul>
-                <li v-for="item in recommendNewMusicList" :key="item.id">
-                    <div :style="{background:'url('+item.picUrl+') center'}">
-                        <div class="singers" @click="playMe(item.id)">
-                            <p>{{item.name}}</p>
-                            <span> {{item.song.artists | songName}} - {{item.song.album.name}} </span>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div v-else> {{isText}} </div>
+        <el-skeleton animated :loading='loading'>
+            <template slot="template">
+                <el-skeleton-item style="width:100px"></el-skeleton-item>
+                <el-skeleton-item></el-skeleton-item>
+                <ul>
+                    <li v-for="item in 10" :key="item">
+                        <el-skeleton-item style="height:100%" variant='image'></el-skeleton-item>
+                    </li>
+                </ul>
+            </template>
+            <template>
+                <div>                    
+                    <left-title str='新音乐' />
+                    <ul>
+                        <li v-for="item in recommendNewMusicList" :key="item.id">
+                            <div :style="{background:'url('+item.picUrl+') center'}">
+                                <div class="singers" @click="playMe(item.id)">
+                                    <p>{{item.name}}</p>
+                                    <span> {{item.song.artists | songName}} - {{item.song.album.name}} </span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </template>
+        </el-skeleton>
     </div>
 </template>
 <script>
@@ -29,7 +41,8 @@ export default {
             idList:[],
             isText:'正在加载',
             errorText:'出错了，无语死了',
-            noPlayState:true
+            noPlayState:true,
+            loading:true
         }
     },
     methods: {
@@ -46,6 +59,7 @@ export default {
             .then(({data}) => {
                 this.recommendNewMusicList = data.result
                 this.idList = this.recommendNewMusicList.map(val => val.id)
+                this.loading = false
             })
             .catch(error => this.isText = this.errorText)
         }

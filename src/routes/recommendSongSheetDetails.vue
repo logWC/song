@@ -6,7 +6,7 @@
             </div>
             <div style="display:flex;margin:20px 0">
                 <el-skeleton-item class="image" variant='image' />
-                <div style="width:40%;margin:5px 25px;">
+                <div style="flex-grow:1;margin:5px 25px;">
                     <el-skeleton-item />
                     <el-skeleton-item />
                 </div>

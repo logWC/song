@@ -1,22 +1,41 @@
 <template>
-    <div style="padding:15px 5%;" v-if="recommendList.length">
-        <left-title str="定制推荐" />
-        <div class="tbody">
-            <div class="tshow" v-for="item in recommendNumList" :key="item.id">
-                <div class="show" @click="clickMe(item.id,item.name,item.creator.nickname,item.picUrl)">
-                    <img v-lazy="item.picUrl" alt="加载出错">
+    <div style="padding:15px 5%;">
+        <el-skeleton animated :loading='loading' >
+            <template slot="template">
+                <el-skeleton-item style="width:100px"></el-skeleton-item>
+                <el-skeleton-item></el-skeleton-item>
+                <div class="tbody">
+                    <div class="tshow" v-for="item in 8" :key="item">
+                        <el-skeleton-item style="width:140px;height:140px" variant='image'></el-skeleton-item>
+                        <div>
+                            <el-skeleton-item></el-skeleton-item>
+                            <el-skeleton-item></el-skeleton-item>
+                        </div>
+                    </div>
                 </div>
-                <div class="title"> {{item.name}} </div>
-            </div>
-        </div>
-        <div v-if="recommendList.length>8" style="text-align:right;font-weight:blod;">
-            <span @click="num=!num">
-                <svg class="icon" aria-hidden="true">
-                    <use :xlink:href="num?'#icon-xiangshang':'#icon-xiangzuo'"></use>
-                </svg>
-                {{num?'收起':'展开'}}
-            </span>
-        </div>
+            </template>
+            <template>
+                <div>
+                    <left-title str="定制推荐" />
+                    <div class="tbody">
+                        <div class="tshow" v-for="item in recommendNumList" :key="item.id">
+                            <div class="show" @click="clickMe(item.id,item.name,item.creator.nickname,item.picUrl)">
+                                <img v-lazy="item.picUrl" alt="加载出错">
+                            </div>
+                            <div class="title"> {{item.name}} </div>
+                        </div>
+                    </div>
+                    <div v-if="recommendList.length>8" style="text-align:right;font-weight:blod;">
+                        <span @click="num=!num">
+                            <svg class="icon" aria-hidden="true">
+                                <use :xlink:href="num?'#icon-xiangshang':'#icon-xiangzuo'"></use>
+                            </svg>
+                            {{num?'收起':'展开'}}
+                        </span>
+                    </div>
+                </div>
+            </template>
+        </el-skeleton>
     </div>
 </template>
 <script>
@@ -27,7 +46,8 @@ export default {
     data() {
         return {
             recommendList:[],
-            num:false
+            num:false,
+            loading:true
         }
     },
     methods: {
@@ -47,6 +67,7 @@ export default {
             this.$api.recommend()
             .then(({data}) => {
                 this.recommendList = data.recommend.filter(val=>val.name!='网易云热歌集合，一键收听')
+                this.loading = false
             })
             .catch(error => console.log('推荐歌单需要登录获取'))
         }
