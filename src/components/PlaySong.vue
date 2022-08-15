@@ -147,6 +147,14 @@ export default {
     width: 100%;
     transition: all 0.3s;
 }
+.whole1{
+    /* top:calc(100vh - 20px); */
+    bottom: -50px;
+}
+.whole2{
+    /* top:calc(100vh - 70px); */
+    bottom: 0px;
+}
 .thead{
     display: flex;
     height: 50px;
@@ -166,10 +174,5 @@ export default {
     width: 50px;
     height: 50px;
 }
-.whole1{
-    top:calc(100vh - 20px);
-}
-.whole2{
-    top:calc(100vh - 70px);
-}
+
 </style>

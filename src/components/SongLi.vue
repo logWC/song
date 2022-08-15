@@ -1,7 +1,7 @@
 <template>
-    <div @[hide]="detailsChange" v-show="songArr.length!=0" class="body-div">
-        <p style="font-weight:bold;font-size:16px">歌曲{{songArr.length}}</p>
-        <ul>
+    <div @[hide]="detailsChange" class="body-div">
+        <p style="font-weight:bold;font-size:16px" v-if="songArr&&songArr.length!=0">歌曲{{songArr.length}}</p>
+        <ul v-if="songArr&&songArr.length!=0">
             <li>
                 <div>
                     <span>歌曲</span>
@@ -76,7 +76,7 @@ export default {
         getAllSong(){
             console.log('触底了')
             let startIndex = this.showcasedPlaylist.length;
-            let maxIndex = this.songArr.length;
+            let maxIndex = this.songArr?this.songArr.length:0;
             if(startIndex+49<maxIndex){
                 this.num = startIndex+50
             }else if(startIndex<maxIndex){
@@ -88,7 +88,7 @@ export default {
     },
     computed:{
         showcasedPlaylist(){
-            return this.songArr.slice(0,this.num || 20)
+            return this.songArr?this.songArr.slice(0,this.num || 20):[]
         }
     },
     mounted() {
@@ -98,7 +98,7 @@ export default {
 </script>
 <style scoped>
 .body-div{
-    margin: 0px 35px;
+    margin: 0px 5px;
     padding: 20px 0;
     position: relative;
 }
