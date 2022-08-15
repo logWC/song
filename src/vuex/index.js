@@ -79,37 +79,23 @@ const song = {
             /* id赋值 */
             commit('oneState',{key:'id',val:id})
             /* 获取歌曲src */
-            this.$api.song(id)
-            .then(({data})=>{
-                if(data.code==200){
-                    let src = data.data[0].url
-                    if(src){
-                        /* 获取图片url */
-                        this.$api.songDetail(id)
-                        .then(({data})=>{
-                            /* 图片赋值 */
-                            commit('oneState',{key:'url',val:data.songs[0].al.picUrl})
-                            /* 歌词赋值 */
-                            dispatch('lyricMe',id)
-                            /* 音源赋值 */
-                            commit('oneState',{key:'src',val:src})
-                        })
-                    }else{
-                        alert('歌曲没找到播放源，可能是没有版权')
-                    }
-                }else if(data.code==-462){
+            Promise.all([this.$api.song(id),this.$api.songDetail(id),this.$api.lyric(id)])
+            .then(([src,url,lyrics])=>{
+                if(src.data.data[0].url&&src.data.code==200){
+                    commit('oneState',{key:'src',val:src.data.data[0].url})
+                    commit('oneState',{key:'url',val:url.data.songs[0].al.picUrl})
+                    dispatch('lyricMe',lyrics.data.lrc)
+                }else if(src.data.code==-462){
                     alert('请登录播放')
                 }
             })
-            .catch(error => {
-                alert('出错了，好像断网了呀！')
-            })
+            .catch(error=>alert('出错了，好像断网了'))
         },
         /* 歌词数组赋值 */
-        lyricMe({state,commit},id){
-            this.$api.lyric(id)
-            .then(({data})=>{
-                let lyric = data.lrc.lyric.split('\n');
+        lyricMe({state,commit},lrc){
+            // this.$api.lyric(id)
+            // .then(({data})=>{
+                let lyric = lrc.lyric.split('\n');
                 let reg = /\[\d*:\d*(\.|:)\d*/g;
                 let currentTimeList = []
                 let currentContentList = []
@@ -141,7 +127,7 @@ const song = {
                 commit('oneState',{key:'currentTimeList',val:currentTimeList})
                 commit('oneState',{key:'currentContentList',val:currentContentList})
                 commit('oneState',{key:'map',val:map})
-            })
+            // })
         },
         /* 修改播放顺序 */
         orderNumMe({state,dispatch,commit}){
