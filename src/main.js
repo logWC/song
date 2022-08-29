@@ -11,9 +11,11 @@ import installs from './use/index'
 import '@/assets/fonts/iconfont'
 Vue.use(installs,{'opt':'我就是opt'})
 // 导入element-ui
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-Vue.use(ElementUI);
+
+import { Skeleton,SkeletonItem } from "element-ui";
+Vue.use(Skeleton)
+Vue.use(SkeletonItem)
+
 
 Vue.config.productionTip = false
 
