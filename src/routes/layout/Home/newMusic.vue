@@ -95,32 +95,33 @@ li > div{
 }
 
 li p{
-    overflow: hidden;
+    overflow: inherit;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 li span{
     display: block;
-    overflow: hidden;
+    overflow: inherit;
     white-space: nowrap;
     text-overflow: ellipsis;
     font-size: 9px;
 }
 .singers{
+    box-sizing: border-box;
     position: absolute;
     left: 100%;
     top: 0;
     height: 100%;
     width: 100%;
     padding: 10px 15px;
-    overflow: hidden;
-    transition: all 0.5s 0.1s;
+    overflow: inherit;
+    transition: all 0.6s 0.1s;
     background-color: rgba(96, 96, 96, 0.5);
     color: white;
     backdrop-filter: blur(6px);
 }
 li:hover > div > div{
     left: 0%;
-    transition: all 0.5s 0.3s;
+    transition: left 0.3s 0.3s;
 }
 </style>
