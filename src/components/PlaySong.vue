@@ -12,17 +12,16 @@
                 @pause="suspendBoolean=false"
                 @ended="ended"
                 ref="audio"
-                controls="controls">
+                >
                     对不起，你的浏览器不支持audio标签，请升级或更换浏览器进行播放
                 </audio>
                 <button>
                     <like-icon :id="id" />
                 </button>
-                <button @click="$store.dispatch('song/orderNumMe')">{{order}}</button>
                 <button @click="$store.dispatch('song/lastMe')">上一首</button>
-                <button v-if="suspendBoolean" @click="suspend">暂停</button>
-                <button v-else @click="play">播放</button>
+                <button @click="changePlayStatus">{{!suspendBoolean?'播放':'暂停'}}</button>
                 <button @click="$store.dispatch('song/nextMe')">下一首</button>
+                <button @click="$store.dispatch('song/orderNumMe')">{{order}}</button>
             </div>
         </div>
 </template>
@@ -59,20 +58,15 @@ export default {
             })
 
         },
-        /* 暂停 */
-        suspend(){
-            !this.audioEl.paused && this.audioEl.pause()
-        },
-        /* 播放 */
-        play(){
-            this.audioEl.paused && this.src && this.audioEl.play()
+        /* 暂停、播放 */
+        changePlayStatus(){
+            this.audioEl.paused?this.audioEl.src&&this.audioEl.play():this.audioEl.pause()
         },
         /* 播放结束 */
         ended(){
             this.order=='正在单曲循环'
             ?this.$store.dispatch('song/play',this.id)
             :this.$store.dispatch('song/nextMe')
-            // this.suspendBoolean = true
         },
         /* 跳转至歌词路由 */
         lyricClick(){
@@ -97,6 +91,12 @@ export default {
         elementMe(){
             this.audioEl = this.$refs.audio;
         },
+        /* 监听控制回调 */
+        keyupEnter(event){
+            if(event.code=='Enter'){
+                this.changePlayStatus()
+            }
+        }
     },
     computed:{
         ...mapState({
@@ -115,7 +115,7 @@ export default {
                 this.int = setInterval(()=>{
                     if(this.audioEl.readyState==4){
                         clearInterval(this.int);
-                        this.play()
+                        this.changePlayStatus()
                     }
                 },500)
             }else{
@@ -138,6 +138,10 @@ export default {
             // 隐藏下标播放
             this.wearOut(4000)
         }
+        window.addEventListener('keyup',this.keyupEnter)
+    },
+    beforeDestroy(){
+        window.removeEventListener('keyup',this.keyupEnter)
     }
 }
 </script>
@@ -148,11 +152,9 @@ export default {
     transition: all 0.3s;
 }
 .whole1{
-    /* top:calc(100vh - 20px); */
     bottom: -50px;
 }
 .whole2{
-    /* top:calc(100vh - 70px); */
     bottom: 0px;
 }
 .thead{
