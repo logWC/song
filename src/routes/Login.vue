@@ -8,10 +8,11 @@
                         <input type="text" @focus="error=''" v-model.number="phone" placeholder="手机号" />
                         <input v-if="loginBoolean==1" type="password" @keyup.enter="logon" @focus="error=''" v-model.number="password" placeholder="密码" />
                         <div v-else style="width:80%;display:flex;align-items:center;background-color:white">
-                            <input type="text" style="width:70%" @focus="error=''" v-model.number="captcha" placeholder="验证码" />
-                            <button style="flex-grow:1;height:25px;margin-right:10px;font-size:10px;border: 1px solid rgba(0, 0, 0, 0.1);background-color:inherit" @click="vcMe">获取验证码</button>
+                            <input type="text" style="flex-grow:1;flex-shrink:2" @focus="error=''" v-model.number="captcha" placeholder="验证码" />
+                            <button style="flex-basis:100px;height:25px;margin-right:10px;font-size:10px;border: 1px solid rgba(0, 0, 0, 0.1);background-color:inherit" @click="vcMe">获取验证码</button>
                         </div>
                     </div>
+                    <span class="error"> {{error}} </span>
                     <button v-if="loginBoolean!=3" @click="verify">登录</button>
                 </div>
                 <div class="switch-button">
@@ -40,7 +41,8 @@ export default {
             loginBoolean:3,
             loginKey:'',
             timeout:null,
-            src:null
+            src:null,
+            isTimeout:false
         }
     },
     methods: {
@@ -61,9 +63,11 @@ export default {
                 this.src = await this.$api.qrCreate(this.loginKey)
                 .then(content=>content.data.data.qrimg)
             }
+            this.isTimeout = false
             this.loginBoolean = 3
             this.error = ''
             const loginCheck = ()=>{
+                if(this.isTimeout)return
                 this.$api.qrCheck(this.loginKey)
                 .then(({data})=>{
                     if(data.code==803){
@@ -71,7 +75,6 @@ export default {
                     }
                     else if(data.code==802 || data.code==801){
                         if(this.loginBoolean == 3){
-                            // clearTimeout(this.timeout)
                             this.timeout = setTimeout(loginCheck,2000)
                         }
                     }
@@ -80,13 +83,13 @@ export default {
                         this.loginBoolean==3&&this.qr()
                     }
                 })
-                // .catch(error=>loginCheck())
             }
             loginCheck()
         },
-        pa(a){
-            clearTimeout(this.timeout)
-            this.loginBoolean = a;
+        pa(num){
+            this.isTimeout = true
+            // clearTimeout(this.timeout)
+            this.loginBoolean = num;
             this.error = ''
         },
         loginStatus(){
@@ -101,9 +104,6 @@ export default {
                     }
                 })
                 .catch(error=>{
-                    // if(error.toString().includes('400')){
-                    //     console.log('未登录')
-                    // }
                     this.signIn=true
                 })
             }else{
@@ -140,7 +140,8 @@ export default {
         this.qr()
     },
     beforeDestroy(){
-        clearTimeout(this.timeout)
+        this.isTimeout = true
+        // clearTimeout(this.timeout)
     },
 }
 </script>
