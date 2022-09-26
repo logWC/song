@@ -1,18 +1,24 @@
 <template>
     <el-skeleton animated :loading='loading'>
         <template slot="template">
-            <div style="text-align:center;margin-top:30px">
+            <div style="text-align:center;padding:15px 0px">
                 <el-skeleton-item style="width:100px;height:25px" />
             </div>
-            <div style="display:flex;margin:20px 0">
+            <div style="display:flex;">
                 <el-skeleton-item class="image" variant='image' />
                 <div style="flex-grow:1;margin:5px 25px;">
                     <el-skeleton-item />
                     <el-skeleton-item />
+                    <!-- <button @click="loading = false">修改</button> -->
                 </div>
             </div>
+            <!-- <div>
+            </div> -->
             <div>
-                <el-skeleton-item style="margin-top:10px;height:35px" v-for="item in 20" :key="item" variant='h1' />
+                <div style="padding:20px 0px">
+                    <el-skeleton-item style="width:100px;height:20px" />
+                </div>
+                <el-skeleton-item style="height:35px" v-for="item in 20" :key="item" variant='h1' />
             </div>
         </template>
         <template>
@@ -58,6 +64,11 @@ export default {
     },
     created() {
         this.getSongIdList()
+    },
+    mounted(){
+        setTimeout(() => {
+            document.documentElement.scrollTop=0
+        }, 0);
     }
 }
 </script>
