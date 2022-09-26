@@ -15,7 +15,7 @@
                     <left-title str='新音乐' />
                     <ul>
                         <li v-for="item in recommendNewMusicList" :key="item.id">
-                            <div :style="{background:'url('+item.picUrl+') center'}">
+                            <div :style="{background:'url('+item.picUrl+'?param=500y500'+') center'}">
                                 <div class="singers" @click="playMe(item.id)">
                                     <p>{{item.name}}</p>
                                     <span> {{item.song.artists | songName}} - {{item.song.album.name}} </span>
