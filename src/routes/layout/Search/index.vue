@@ -4,7 +4,7 @@
             <!-- 搜索框 -->
             <div class="search">
                 <div>
-                    <input ref="inpu" type="text" @blur="blur" @click.stop @focus="focus" @keyup="throttle(searchContent,$event)" @keyup.enter="clickSearch(searchContent)" v-model.trim="searchContent" />
+                    <input ref="inpu" type="text" @blur="blur" @click.stop @focus="focus" @keyup.stop="throttle(searchContent,$event)" @keyup.enter="clickSearch(searchContent)" v-model.trim="searchContent" />
                     <button @click="clickSearch(searchContent)">搜索</button>
                 </div>
                 <ul v-show="proposalBoole" @mouseleave="mouseLeave" @mouseenter="mouseEnter" class="proposal">
