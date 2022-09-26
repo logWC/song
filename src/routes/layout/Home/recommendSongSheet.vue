@@ -96,6 +96,16 @@ img{
     flex-basis:25%;
     margin: 10px 0;
 }
+@media (max-width:700px) {
+    .tshow{
+        flex-basis: 33%;
+    }
+}
+@media (max-width:520px) {
+    .tshow{
+        flex-basis: 50%;
+    }
+}
 .tshow > div{
     width: 140px;
     margin: 0 auto;
