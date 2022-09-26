@@ -1,7 +1,7 @@
 <template>
     <div class="rootDiv">
         <Nav />
-        <keep-alive include="Home,Mine">
+        <keep-alive>
             <router-view></router-view>
         </keep-alive>
     </div>
