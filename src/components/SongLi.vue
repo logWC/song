@@ -49,7 +49,7 @@ export default {
     props:{songArr:Array},
     data() {
         return {
-            detailsIndex:-1,
+            detailsIndex:0,
             hide:null,
             noPlayState:true,
             num:null
@@ -63,21 +63,21 @@ export default {
             }
             this.$store.dispatch('song/clickPlayMe',id)
         },
-        detailsChange(id=false){
-            this.detailsIndex = id || -1;
+        detailsChange(id=0){
+            this.detailsIndex = id;
             this.hide = id?'click':null;
         },
         /* open io */
         openIo(){
-            this.io = new IntersectionObserver(entries=>entries[0].isIntersecting&&this.getAllSong());
-            this.io.observe(this.$refs.touchbottom);
+            let io = new IntersectionObserver(entries=>entries[0].isIntersecting&&this.getAllSong());
+            io.observe(this.$refs.touchbottom);
         },
         /* io observe */
         getAllSong(){
             console.log('触底了')
             let startIndex = this.showcasedPlaylist.length;
             let maxIndex = this.songArr?this.songArr.length:0;
-            if(startIndex+49<maxIndex){
+            if(startIndex+50<=maxIndex){
                 this.num = startIndex+50
             }else if(startIndex<maxIndex){
                 this.num = maxIndex

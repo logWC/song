@@ -42,7 +42,6 @@ export default {
             loginKey:'',
             timeout:null,
             src:null,
-            isTimeout:false
         }
     },
     methods: {
@@ -63,11 +62,10 @@ export default {
                 this.src = await this.$api.qrCreate(this.loginKey)
                 .then(content=>content.data.data.qrimg)
             }
-            this.isTimeout = false
             this.loginBoolean = 3
             this.error = ''
             const loginCheck = ()=>{
-                if(this.isTimeout)return
+                if (!this.signIn) return
                 this.$api.qrCheck(this.loginKey)
                 .then(({data})=>{
                     if(data.code==803){
@@ -87,8 +85,7 @@ export default {
             loginCheck()
         },
         pa(num){
-            this.isTimeout = true
-            // clearTimeout(this.timeout)
+            clearTimeout(this.timeout)
             this.loginBoolean = num;
             this.error = ''
         },
@@ -101,10 +98,12 @@ export default {
                         this.$router.replace('/layout/home')
                     }else{
                         this.signIn=true
+                        this.qr()
                     }
                 })
                 .catch(error=>{
                     this.signIn=true
+                    this.qr()
                 })
             }else{
                 this.$router.replace('/layout/home')
@@ -137,12 +136,11 @@ export default {
     },
     created() {
         this.loginStatus()
-        this.qr()
     },
     beforeDestroy(){
-        this.isTimeout = true
-        // clearTimeout(this.timeout)
-    },
+        clearTimeout(this.timeout)
+        this.signIn = false;
+    }
 }
 </script>
 <style scoped>

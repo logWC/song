@@ -10,11 +10,6 @@ import { mapState } from 'vuex'
 export default {
     name:'likes',
     components:{SongLi},
-    data() {
-        return {
-            songArr:[]
-        }
-    },
     computed:{
         ...mapState({
             likeDataList:state=>state.profiles.likeDataList

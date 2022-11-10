@@ -1,8 +1,8 @@
 <template>
         <div class="bodyr"
-        :class="{whole1:boole,whole2:!boole}"
-        @[mouseleave]="wearOut(2000)"
-        @[mouseenter]="penetrate">
+        :class="{whole1:!boole,whole2:boole}"
+        @mouseleave="wearOut(2000)"
+        @mouseenter="penetrate">
             <div style="background-color:transparent;height:20px"> </div>
             <div class="thead">
                 <img @click="lyricClick" @error="require('@/assets/logo.png')" :src="url" alt="#" />
@@ -33,13 +33,11 @@ export default {
     components:{likeIcon},
     data() {
         return {
-            boole:false,
+            boole:true,
             setTime:null,
             suspendBoolean:false,
             audioEl:null,
             int:null,
-            mouseenter:'mouseenter',
-            mouseleave:'mouseleave',
         }
     },
     methods: {
@@ -80,12 +78,12 @@ export default {
         },
         /* 鼠标穿入元素 */
         penetrate(){
-            this.boole=false
+            this.boole=true
             clearTimeout(this.setTime)
         },
         /* 鼠标穿出元素 */
         wearOut(time){
-            this.setTime = setTimeout(()=>this.boole=true,time)
+            this.setTime = setTimeout(()=>this.boole=false,time)
         },
         /* 绑定元素 */
         elementMe(){
@@ -93,7 +91,7 @@ export default {
         },
         /* 监听控制回调 */
         keyupEnter(event){
-            if(event.code=='Enter'){
+            if(event.code=='Space'){
                 this.changePlayStatus()
             }
         }
@@ -130,14 +128,7 @@ export default {
     mounted() {
         // 设置绑定元素
         this.elementMe()
-        if(screen.width<screen.height){
-            this.mouseenter = null
-            this.mouseleave = null
-            this.boole = false
-        }else{
-            // 隐藏下标播放
-            this.wearOut(4000)
-        }
+        this.wearOut(4000)
         window.addEventListener('keyup',this.keyupEnter)
     },
     beforeDestroy(){
@@ -146,35 +137,39 @@ export default {
 }
 </script>
 <style scoped>
-.bodyr{
-    position: fixed;
-    width: 100%;
-    transition: all 0.3s;
-}
-.whole1{
-    bottom: -50px;
-}
-.whole2{
-    bottom: 0px;
-}
-.thead{
-    display: flex;
-    height: 50px;
-    box-shadow: 0px -1px 5px #333;
-    background-color: white;
-}
-.thead audio{
-    flex-grow: 1;
-    height: inherit;
-    background-color: inherit;
-}
-.thead button{
-    background-color: inherit;
-    border: none;
-}
-.thead img{
-    width: 50px;
-    height: 50px;
-}
-
+    .bodyr{
+        position: fixed;
+        width: 100%;
+        transition: all 0.3s;
+    }
+    .whole1{
+        bottom: -50px;
+    }
+    .whole2{
+        bottom: 0px;
+    }
+    @media screen and (max-aspect-ratio:1/1) {
+        .whole1{
+            bottom: 0px;
+        }
+    }
+    .thead{
+        display: flex;
+        height: 50px;
+        box-shadow: 0px -1px 5px #333;
+        background-color: white;
+    }
+    .thead audio{
+        flex-grow: 1;
+        height: inherit;
+        background-color: inherit;
+    }
+    .thead button{
+        background-color: inherit;
+        border: none;
+    }
+    .thead img{
+        width: 50px;
+        height: 50px;
+    }
 </style>

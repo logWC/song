@@ -39,8 +39,6 @@ export default {
         return {
             recommendNewMusicList:[],
             idList:[],
-            isText:'正在加载',
-            errorText:'出错了，无语死了',
             noPlayState:true,
             loading:true
         }
@@ -61,7 +59,7 @@ export default {
                 this.idList = this.recommendNewMusicList.map(val => val.id)
                 this.loading = false
             })
-            .catch(error => this.isText = this.errorText)
+            .catch(error => console.log(error))
         }
     },
     created() {

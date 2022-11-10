@@ -9,11 +9,8 @@
                 <div style="flex-grow:1;margin:5px 25px;">
                     <el-skeleton-item />
                     <el-skeleton-item />
-                    <!-- <button @click="loading = false">修改</button> -->
                 </div>
             </div>
-            <!-- <div>
-            </div> -->
             <div>
                 <div style="padding:20px 0px">
                     <el-skeleton-item style="width:100px;height:20px" />

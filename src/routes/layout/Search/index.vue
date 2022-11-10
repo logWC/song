@@ -4,7 +4,7 @@
             <!-- 搜索框 -->
             <div class="search">
                 <div>
-                    <input ref="inpu" type="text" @blur="blur" @click.stop @focus="focus" @keyup.stop="throttle(searchContent,$event)" @keyup.enter="clickSearch(searchContent)" v-model.trim="searchContent" />
+                    <input ref="inpu" type="text" @blur="blur" @click.stop @focus="focus" @keyup.stop="throttle(searchContent)" @keyup.enter="clickSearch(searchContent)" v-model.trim="searchContent" />
                     <button @click="clickSearch(searchContent)">搜索</button>
                 </div>
                 <ul v-show="proposalBoole" @mouseleave="mouseLeave" @mouseenter="mouseEnter" class="proposal">
@@ -26,8 +26,7 @@
                 </div>
             </div>
         </div>
-        <SongLi v-if="getSearchSuccess || searchContent==''" :songArr="songArr" />
-        <h4 v-else style="text-align:center">对不起，没搜索到你需要的内容</h4>
+        <SongLi :songArr="songArr" />
     </div>
 </template>
 <script>
@@ -43,8 +42,8 @@ export default {
             i:null,
             historyList:[],
             songArr:[],
-            getSearchSuccess:true,
-            hideBoolean:true
+            hideBoolean:true,
+            hideNum:false
         }
     },
     methods: {
@@ -63,6 +62,7 @@ export default {
         },
         /* 获取搜索结果*/
         clickSearch(content){
+            console.log(1)
             // 清空搜索结果
             this.songArr = []
             // 点击历史记录触发的搜索事件，搜索框需要添加text
@@ -72,17 +72,17 @@ export default {
             // 发送获取请求
             this.$api.search(content)
             .then(({data}) => {
-                this.getSearchSuccess=true;
                 this.songArr=data.result.songs
-                this.throttle(content,{key:'Enter'})
+                this.throttle(content,true)
             })
-            .catch(error => this.getSearchSuccess=false)
+            .catch(error => alert('搜索出错了,'+error))
             // 隐藏搜索建议
             this.proposalBoole = false
         },
         /* 使用防抖获取搜索建议 */
-        throttle(content,el,time=100){
-            this.proposalBoole = el.key=='Enter'?false:true
+        throttle(content,boo=false){
+            console.log(2)
+            this.proposalBoole = boo?false:true
             if(this.i)clearTimeout(this.i)
             this.i = setTimeout(
                 ()=>{
@@ -91,12 +91,11 @@ export default {
                         this.proposalBoole=false;
                         return
                     }
-                    this.getSearchSuccess = true
                     // 获取搜索建议
                     this.$api.searchSuggest(content)
                     .then(({data}) => this.proposalList = data.result.songs)
                     .catch(error=>this.proposalList=[])
-                },time)
+                },100)
         },
         /* 使用LRU算法对搜索历史进行存储 */
         historyListLRU(content){
@@ -161,6 +160,10 @@ export default {
     top: 40px;
     z-index: 1;
 }
+.proposal li{
+    border-bottom: 1px solid #c2c0c0;
+    padding: 10px;
+}
 .proposal > li:hover{
     background-color: aliceblue;
 }
@@ -199,34 +202,5 @@ export default {
     border-radius: 5px;
     padding: 8px 2px 0 8px;
     margin: 0 5px;
-}
-.bodys{
-    background-color: antiquewhite;
-}
-.bodys > p{
-    font-weight: bold;
-    outline: none;
-}
-bodys ul,.bodys > p{
-    margin: 0 10px;
-}
-body li,.bodys > p{
-    border-bottom: 1px solid #c2c0c0;
-    padding: 10px;
-}
-p~span{
-    font-size: 10px;
-}
-/* 宽度大于高度，PC端 */
-@media screen and (orientation:landscape){
-    li{
-        background-color: yellowgreen;
-    }
-}
-/* 高度大于宽度，移动端 */
-@media screen and (orientation:portrait){
-    li{
-        background-color: green;
-    }
 }
 </style>

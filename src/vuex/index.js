@@ -18,7 +18,8 @@ const profiles = {
             dispatch('obtainLikeList',profile.userId)
         },
         /* 获用户喜欢歌曲 */
-        async obtainLikeList({state,commit}){
+        async obtainLikeList({state,commit},userId){
+            console.log(userId);
             // 获取喜欢列表
             let likeIdList = await this.$api.likeList(state.profile.userId)
             .then(({data}) => data.ids)
@@ -84,7 +85,7 @@ const song = {
                 if(src.data.data[0].url&&src.data.code==200){
                     commit('oneState',{key:'src',val:src.data.data[0].url})
                     commit('oneState',{key:'url',val:url.data.songs[0].al.picUrl})
-                    dispatch('lyricMe',lyrics.data.lrc)
+                    dispatch('lyricMe',lyrics.data.lrc.lyric)
                 }else if(src.data.code==-462){
                     alert('请登录播放')
                 }
@@ -93,9 +94,7 @@ const song = {
         },
         /* 歌词数组赋值 */
         lyricMe({state,commit},lrc){
-            // this.$api.lyric(id)
-            // .then(({data})=>{
-                let lyric = lrc.lyric.split('\n');
+                let lyric = lrc.split('\n');
                 let reg = /\[\d*:\d*(\.|:)\d*/g;
                 let currentTimeList = []
                 let currentContentList = []
@@ -127,7 +126,6 @@ const song = {
                 commit('oneState',{key:'currentTimeList',val:currentTimeList})
                 commit('oneState',{key:'currentContentList',val:currentContentList})
                 commit('oneState',{key:'map',val:map})
-            // })
         },
         /* 修改播放顺序 */
         orderNumMe({state,dispatch,commit}){

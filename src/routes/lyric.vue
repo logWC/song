@@ -26,9 +26,6 @@ export default {
                 this.timeIndex--
             }
         },
-        test(){
-            console.log('1')
-        },
         /* 绑定元素 */
         elementMe(){
             this.lyricEl = this.$refs.lyric
@@ -39,7 +36,6 @@ export default {
             currentTimeList:state=>state.song.currentTimeList,
             currentContentList:state=>state.song.currentContentList,
             map:state=>state.song.map,
-            order:state=>state.song.orderArr[state.song.orderNum],
             url:state=>state.song.url
         })
     },
@@ -62,6 +58,7 @@ export default {
     },
     activated() {
         this.timeIndex=this.timeIndex>0?this.timeIndex-1:0
+
         setTimeout(() => {
             document.documentElement.scrollTop=0
         }, 0);
@@ -95,26 +92,12 @@ export default {
         const bodyrDiv = h('div',{
             class:['bodyr']
         },[picDiv,lyricDiv])
-        
-        /* 按钮 */
-        // 测试按钮
-        const lastButton = h('button',{
-            on:{
-                click: () => this.$store.dispatch('song/lastMe')
-            }
-        },'上一首')
-        // 按钮
-        const testButton = h('button',{
-            on:{
-                click:()=>this.test()
-            }
-        },'测试')
 
 
         /* template毛玻璃 */
         const glass = h('div',{
             class:['wholeGlass']
-        },[headrDiv,bodyrDiv,testButton,lastButton])
+        },[headrDiv,bodyrDiv])
 
         /* template */
         return h('div',{
